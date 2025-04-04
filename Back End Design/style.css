@@ -33,3 +33,48 @@ html body{
     text-align: center;
     font-size: 200%;
 }
+
+.login-form{
+    width: 60vw;
+    margin-top: 5%;
+    margin-left: 20vw;
+    margin-right: 20vw;
+    border-style: double;
+    border-color: var(--smc-dark-gray);
+    text-align: center;
+}
+
+.login-table{
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+}
+.table-text{
+    color: var(--smc-blue);
+    text-align: center;
+    column-rule-width: 30%;
+}
+
+.table-text-entry{
+    column-rule-width: 70%;
+}
+
+.table-row{
+    padding: 15vh;
+}
+
+.text-entry{
+    border-color: var(--smc-blue);
+    width: 90%;
+    color: var(--smc-red);
+}
+
+.submit-button{
+    background-color: var(--smc-red);
+    color: white;
+    border-radius: 50px;
+    margin-top: 3%;
+    margin-bottom: 3%;
+}
+

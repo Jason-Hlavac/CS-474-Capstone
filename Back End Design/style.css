@@ -20,7 +20,7 @@ html body{
 
 .logo-div{
     text-align: center;
-    margin-top: 2%;
+    margin-top: 4%;
 }
 
 .logo{
@@ -28,17 +28,19 @@ html body{
 }
 
 .login-title{
-    margin-top: 2%;
+    margin-top: 4%;
     color: var(--smc-blue);
     text-align: center;
     font-size: 200%;
 }
 
 .login-form{
-    width: 60vw;
+    position: relative;
+    width: 70vw;
+    min-height: 25vw;
     margin-top: 5%;
-    margin-left: 20vw;
-    margin-right: 20vw;
+    margin-left: 15vw;
+    margin-right: 15vw;
     border-style: double;
     border-color: var(--smc-dark-gray);
     text-align: center;
@@ -48,33 +50,43 @@ html body{
     width: 80%;
     margin-left: 10%;
     margin-right: 10%;
+    margin-bottom: 10%;
     text-align: center;
 }
 .table-text{
     color: var(--smc-blue);
     text-align: center;
     column-rule-width: 30%;
+    font-size: 2vh;
 }
 
 .table-text-entry{
-    column-rule-width: 70%;
+    column-rule-width: 80%;
+
 }
 
 .table-row{
-    padding: 15vh;
+    height: 10vh;
 }
 
 .text-entry{
     border-color: var(--smc-blue);
     width: 90%;
+    border-radius: 6px;
+    height: 2vh;
     color: var(--smc-red);
 }
 
 .submit-button{
+    position: absolute;
     background-color: var(--smc-red);
     color: white;
+    left: 42.5%;
+    right: 42.5%;
+    bottom: 0;
+    width: 15%;
+    height: 3vh;
     border-radius: 50px;
-    margin-top: 3%;
-    margin-bottom: 3%;
+    margin-bottom: 5%;
 }
 

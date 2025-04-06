@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Parking Dashboard </title>
+        <link rel="stylesheet" href = "style.css">
+        <link rel="icon" href="favicon.ico">
+        <link href='https://fonts.googleapis.com/css?family=Bree Serif' rel='stylesheet'>
+        <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    </head>
+
+    <body>
+        <div class = "logo-div">
+            <img class = "logo" src="smc-logo-color.png">
+        </div>
+
+        <div class = "main-container" id = "main-container"></div>
+        
+        <script type="text/babel">
+            function Page() {
+              
+            }
+      
+            const container = document.getElementById('main-container');
+            const root = ReactDOM.createRoot(container);
+            root.render(<page />)
+          </script>
+
+
+    </body>
+</html>

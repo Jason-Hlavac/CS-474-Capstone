@@ -19,13 +19,20 @@
         <div class = "main-container" id = "main-container"></div>
         
         <script type="text/babel">
-            function Page() {
-              
+            function Main() {
+                const page = <>
+                <div className = "dashboard-container">
+                    <div className = "dashboard-left"> </div>
+                    <div className = "dashboard-divider"> </div>
+                    <div className = "dashboard-right"> </div>
+                </div> 
+                </>;
+                return(page);
             }
       
             const container = document.getElementById('main-container');
             const root = ReactDOM.createRoot(container);
-            root.render(<page />)
+            root.render(<Main />)
           </script>
 
 

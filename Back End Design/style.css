@@ -53,6 +53,7 @@ html body{
     margin-bottom: 10%;
     text-align: center;
 }
+
 .table-text{
     color: var(--smc-blue);
     text-align: center;
@@ -71,6 +72,8 @@ html body{
 
 .text-entry{
     border-color: var(--smc-blue);
+    border-style: solid;
+    outline: none;
     width: 90%;
     border-radius: 6px;
     height: 2vh;
@@ -90,3 +93,29 @@ html body{
     margin-bottom: 5%;
 }
 
+.dashboard-container{
+    margin-top: 5%;
+    height: 70vh;
+    width: 100vw;
+}
+
+.dashboard-left{
+    width: 50%;
+    float: left;
+    height: 100%;
+}
+
+.dashboard-right{
+    width: 50%;
+    height: 100%;
+    float: right;
+}
+
+.dashboard-divider{
+    float: left;
+    border-style: solid;
+    border-width:  1px;
+    height: 100%;
+    width: 0px;
+    opacity: 50%;
+}

@@ -19,16 +19,52 @@
         <div class = "main-container" id = "main-container"></div>
         
         <script type="text/babel">
+            const { useState } = React;
+            function TrafficSlider(props){
+                const [trafficLevel] = useState(props.initialTrafficLevel);
+                const maxTrafficLevel = 9;
+                const levelsList = ["No Traffic", "Slight Traffic", "Light Traffic", "Moderate Traffic", "Busy Traffic", "Heavy Traffic", "Very Heavy Traffic", "Extreme Traffic", "Standstill"];
+                console.log(trafficLevel);
+                const slider = [];
+
+                for(var i = 1; i < trafficLevel; i++){
+                    slider.push(<div className = "slider-active" key = {i}> </div>)
+                }
+
+                slider.push(<div className = "slider-current" key = {trafficLevel}> </div>)
+
+                for(var i = trafficLevel+1; i <= maxTrafficLevel; i++){
+                    slider.push(<div className = "slider-inactive" key = {i}> </div>)
+
+                }
+                return(<><div className = "traffic-slider-subcontainer">{slider}</div> <div class="break"></div> <div className = "traffic-slider-text">{levelsList[trafficLevel-1]}</div></>);
+            }
+
+            function TrafficLevel(){
+                return(<>
+                    <div className = "traffic-level-container">
+                    <div className = "traffic-slider-container">
+                        <TrafficSlider initialTrafficLevel = {5} />
+                    </div>
+                    <div className = "button-container">
+                        <button className = "dashboard-button">Set Traffic Level</button>
+                        <button className = "dashboard-button">Reset Selection</button>
+                    </div>
+                </div>
+                </>);
+            }
+
             function Main() {
-                const page = <>
+                return(<>
                 <div className = "dashboard-container">
-                    <div className = "dashboard-left"> </div>
+                    <div className = "dashboard-left"> <TrafficLevel /></div>
                     <div className = "dashboard-divider"> </div>
                     <div className = "dashboard-right"> </div>
                 </div> 
-                </>;
-                return(page);
+                </>);
             }
+
+
       
             const container = document.getElementById('main-container');
             const root = ReactDOM.createRoot(container);

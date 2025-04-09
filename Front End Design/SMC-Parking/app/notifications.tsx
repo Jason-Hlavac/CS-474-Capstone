@@ -1,6 +1,5 @@
 import { Text, View, useWindowDimensions } from "react-native";
-import { Header } from '@/components/Header';
-
+import { Header } from '@/components/Header'
 
 export default function Index() {
   const { width, height} = useWindowDimensions();
@@ -8,8 +7,9 @@ export default function Index() {
     <View
       style={{
         width, height, backgroundColor: 'white', overflowX: 'hidden',
-      }}>
-      <Header title = {'Parking Availability'} isReturnPage = {false} />
+      }}
+    >
+      <Header title = {'Notification Settings'} isReturnPage = {true} />
     </View>
   );
 }

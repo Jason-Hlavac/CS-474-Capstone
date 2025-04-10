@@ -20,13 +20,50 @@
         
         <script type="text/babel">
             const { useState } = React;
+
+    //Lot Manager Functions
+            function LotManager(props){
+                return(<>
+                <div className = "lot-manager-container">
+
+                </div>
+                </>)
+            }
+
+    //Threshold Widget Functions
+            function Thresholds(props){
+                const [quantity] = useState(props.initialQuantity);
+                const [time] = useState(props.initialTime);
+
+                return(<>
+                <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%'}}>
+                    <h1 style = {{color: '#013564', textAlign: 'center'}}>Thresholds</h1>
+                    <div className="break"></div>
+                    <div className = "threshold-container">
+                        <div className = "threshold-inner-container">
+                            Threshold for highest traffic level
+                            <div className = "threshold-text-container">
+                                <label className = "threshold-label" for = "quantity-input">Quantity (%):</label>
+                                <input type = "number" id = "quantity-input" className = "threshold-input" defaultValue = {quantity}/>
+                                <label className = "threshold-label" for = "time-input">Time (Mins):</label>
+                                <input type = "number" id = "time-input" className = "threshold-input" defaultValue = {time}/>
+                            </div>
+                        </div>
+                    <div className = "button-container">
+                        <button className = "dashboard-button">Set Threshold</button>
+                        <button className = "dashboard-button">Reset Changes</button>
+                    </div>
+                    </div>
+                </div>
+                </>)
+            }
+    // Traffic Slider Widget Functions
             function TrafficSlider(props){
                 const [trafficLevel] = useState(props.initialTrafficLevel);
                 const maxTrafficLevel = 9;
                 const levelsList = ["No Traffic", "Slight Traffic", "Light Traffic", "Moderate Traffic", "Busy Traffic", "Heavy Traffic", "Very Heavy Traffic", "Extreme Traffic", "Standstill"];
-                console.log(trafficLevel);
                 const slider = [];
-
+                //Create the Traffic bars
                 for(var i = 1; i < trafficLevel; i++){
                     slider.push(<div className = "slider-active" key = {i}> </div>)
                 }
@@ -40,8 +77,12 @@
                 return(<><div className = "traffic-slider-subcontainer">{slider}</div> <div class="break"></div> <div className = "traffic-slider-text">{levelsList[trafficLevel-1]}</div></>);
             }
 
+            
             function TrafficLevel(){
                 return(<>
+                <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
+                    <h1 style = {{color: '#013564', textAlign: 'center'}}>Traffic Levels</h1>
+                    <div className = "break"></div>
                     <div className = "traffic-level-container">
                     <div className = "traffic-slider-container">
                         <TrafficSlider initialTrafficLevel = {5} />
@@ -51,15 +92,16 @@
                         <button className = "dashboard-button">Reset Selection</button>
                     </div>
                 </div>
+                </div>
                 </>);
             }
-
+    //Main Function for the Page
             function Main() {
                 return(<>
                 <div className = "dashboard-container">
-                    <div className = "dashboard-left"> <TrafficLevel /></div>
+                    <div className = "dashboard-left"><TrafficLevel /><Thresholds initialQuantity = {3.4} initialTime = {10}/></div>
                     <div className = "dashboard-divider"> </div>
-                    <div className = "dashboard-right"> </div>
+                    <div className = "dashboard-right"><LotManager/> </div>
                 </div> 
                 </>);
             }

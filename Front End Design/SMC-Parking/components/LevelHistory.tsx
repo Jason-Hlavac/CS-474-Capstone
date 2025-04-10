@@ -13,9 +13,4 @@ const styles = StyleSheet.create({
         flex: 3,
     },
     
-    levelContainer: {
-        margin: '2%',
-        backgroundColor: '#D8E5F0',
-        height: '60%'
-    }
 })

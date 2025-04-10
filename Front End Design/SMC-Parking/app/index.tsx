@@ -1,5 +1,7 @@
 import { Text, View, useWindowDimensions } from "react-native";
 import { Header } from '@/components/Header';
+import { CurrentLevel } from '@/components/CurrentLevel';
+import { LevelHistory } from "@/components/LevelHistory";
 
 
 export default function Index() {
@@ -10,6 +12,8 @@ export default function Index() {
         width, height, backgroundColor: 'white', overflowX: 'hidden',
       }}>
       <Header title = {'Parking Availability'} isReturnPage = {false} />
+      <CurrentLevel currLevel = { 5 } />
+      <LevelHistory />
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, TouchableOpacity, Touchable } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export function Header({ title, isReturnPage }: {title: string, isReturnPage : boolean}){
@@ -9,10 +9,19 @@ export function Header({ title, isReturnPage }: {title: string, isReturnPage : b
                 <Image style = {styles.smcLogo} source = {require('../assets/images/smc-logo-color.png')}/>
             </View>
             <View style = {styles.titleTextWrapper}>
-                <Text style = {styles.titleText}>{title}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('notifications')} style = {styles.touchable}>
-                    <Image style = {styles.settingsButton} source = {require('../assets/images/settings-button.png')}></Image>
-                </TouchableOpacity>
+                <View style = {styles.left}>
+                {isReturnPage == true ? <TouchableOpacity onPress={() => navigation.navigate('index')} style = {styles.touchable}>
+                        <Image style = {styles.returnButton} source = {require('../assets/images/return-button.png')}></Image>
+                    </TouchableOpacity> : null}
+                </View>
+                <View style = {styles.center}>
+                    <Text style = {styles.titleText}>{title}</Text>
+                </View>
+                <View style = {styles.right}>
+                    {isReturnPage == false ? <TouchableOpacity onPress={() => navigation.navigate('notifications')} style = {styles.touchable}>
+                        <Image style = {styles.settingsButton} source = {require('../assets/images/settings-button.png')}></Image>
+                    </TouchableOpacity> : null}
+                </View>
             </View>
             <View style = {styles.hr}/>
         </View>
@@ -21,13 +30,14 @@ export function Header({ title, isReturnPage }: {title: string, isReturnPage : b
 
 const styles = StyleSheet.create({
     headerWrapper: {
-        flex: 1,
+        height: '10%',
+        width: '100%',
         alignItems: 'center',
     },
     
     logoDiv: {
         width: '50%',
-        height: '4%',
+        height: '40%',
         alignItems: 'center',
     },
 
@@ -46,6 +56,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 
+    left: {
+        width: '10%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    center: {
+        width: '70%',
+        textAlign: 'center',
+        justifyContent: 'center',
+    },
+
+    right: {
+        width: '10%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
     titleText: {
         marginTop: '2%',
         fontFamily: 'Bree Serif',
@@ -57,13 +85,18 @@ const styles = StyleSheet.create({
     },
 
     touchable: {
-        height: 20,
         width: 20,
-        alignSelf: 'flex-end',
-        
+        height: 20,
+        alignSelf: 'center',
     },
 
     settingsButton: {
+        height: '100%',
+        width: '100%',
+        resizeMode: 'contain',
+    },
+
+    returnButton: {
         height: '100%',
         width: '100%',
         resizeMode: 'contain',

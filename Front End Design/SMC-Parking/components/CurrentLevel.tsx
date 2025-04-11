@@ -1,8 +1,10 @@
 import { StyleSheet, View, Text } from 'react-native';
 import { ComponentText } from './ComponentText';
 import { CurrentLevelBars } from './CurrentLevelBars';
+import React, { useState } from 'react';
 
-export function CurrentLevel({ currLevel }: {currLevel: number}){
+export function CurrentLevel(){
+    const [currLevel, setCurrLevel] = useState(5);
     const getText = () => {
         const text = ["No Traffic", "Slight Traffic", "Light Traffic", "Moderate Traffic", "Busy Traffic", "Heavy Traffic", "Very Heavy Traffic", "Extreme Traffic", "Standstill"];
         return(text[currLevel]);

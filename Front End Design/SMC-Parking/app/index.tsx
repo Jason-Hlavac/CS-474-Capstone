@@ -12,7 +12,7 @@ export default function Index() {
         width, height, backgroundColor: 'white', overflowX: 'hidden',
       }}>
       <Header title = {'Parking Availability'} isReturnPage = {false} />
-      <CurrentLevel currLevel = { 5 } />
+      <CurrentLevel/>
       <LevelHistory />
     </View>
   );

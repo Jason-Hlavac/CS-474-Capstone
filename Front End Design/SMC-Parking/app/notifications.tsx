@@ -1,5 +1,7 @@
 import { Text, View, useWindowDimensions } from "react-native";
 import { Header } from '@/components/Header'
+import { NotificationToggle } from "@/components/NotificationToggle";
+import { NotificationForm } from "@/components/NotificationForm";
 
 export default function Index() {
   const { width, height} = useWindowDimensions();
@@ -10,6 +12,8 @@ export default function Index() {
       }}
     >
       <Header title = {'Notification Settings'} isReturnPage = {true} />
+      <NotificationToggle/>
+      <NotificationForm/>
     </View>
   );
 }

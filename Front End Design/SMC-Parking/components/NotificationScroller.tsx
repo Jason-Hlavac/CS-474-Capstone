@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, ScrollView} from 'react-native';
 
 const dummyData = [{day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}];
 
@@ -32,10 +32,10 @@ export function NotificationScroller(){
                 <View style = {styles.paddingCol}></View>
             </View>
 
-            <View style = {styles.scrollable}>
+            <ScrollView style = {styles.scrollable}>
                 {rows}
 
-            </View>
+            </ScrollView>
         </View>
     </>)
 }
@@ -62,19 +62,17 @@ const styles = StyleSheet.create({
 
     row:{
         width: '100%',
-        height: '10%',
+        height: '25%',
         display: 'flex',
         flexDirection: 'row',
         borderBottomColor: 'black',
         borderBottomWidth: 1,
-
     },
 
     scrollable:{
         width: '100%',
         height: '88%',
         backgroundColor: '#D8E5F0',
-        overflowY: 'scroll',
         display: 'flex',
         flexDirection: 'column',
     },

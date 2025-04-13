@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView} from 'react-native';
+import { StyleSheet, View, ScrollView, Image, TouchableOpacity} from 'react-native';
 
 const dummyData = [{day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}];
 
@@ -15,7 +15,7 @@ export function NotificationScroller(){
                 <View style = {[styles.dayCol, styles.col]}>{notificationData[i]['day']}</View>
                 <View style = {[styles.arriveCol, styles.col]}>{String(notificationData[i].arrivalTime.hours%12 || 12).padStart(2, '0') + ":" + String(notificationData[i].arrivalTime.minutes).padStart(2, '0') + " " + amOrPm}</View>
                 <View style = {[styles.travelCol, styles.col]}>{notificationData[i]['travelTime'].hours + ':' +notificationData[i]['travelTime'].minutes}</View>
-                <View style = {[styles.removeCol, styles.col]}>Remove</View>
+                <View style = {[styles.removeCol, styles.col]}><TouchableOpacity style = {styles.touchable}><Image style = {styles.image} source= {require('@/assets/images/closed.png')}/></TouchableOpacity></View>
                 <View style = {styles.paddingCol}></View>
             </View>
             </>)
@@ -29,7 +29,7 @@ export function NotificationScroller(){
                 <View style = {[styles.arriveCol, styles.col]}>Time Arriving</View>
                 <View style = {[styles.travelCol, styles.col]}>Travel Time</View>
                 <View style = {[styles.removeCol, styles.col]}>Remove</View>
-                <View style = {styles.paddingCol}></View>
+                <View style = {[styles.paddingCol, styles.col]}></View>
             </View>
 
             <ScrollView style = {styles.scrollable}>
@@ -62,16 +62,14 @@ const styles = StyleSheet.create({
 
     row:{
         width: '100%',
-        height: '25%',
+        height: '20%',
         display: 'flex',
         flexDirection: 'row',
-        borderBottomColor: 'black',
-        borderBottomWidth: 1,
     },
 
     scrollable:{
         width: '100%',
-        height: '88%',
+        height: '80%',
         backgroundColor: '#D8E5F0',
         display: 'flex',
         flexDirection: 'column',
@@ -83,10 +81,15 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        borderBottomWidth: 1,
+        fontFamily: 'Bree Serif',
+        fontSize: 14,
+        color: '#013564',
+        fontWeight: 'bold',
     },
 
     dayCol: {
-        width: '15%',
+        width: '18%',
     },
 
     arriveCol: {
@@ -99,12 +102,28 @@ const styles = StyleSheet.create({
 
     removeCol: {
         width: '20%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     paddingCol: {
         width: '5%',
     },
 
+    touchable: {
+        display: 'flex',
+        justifyContent: 'center',
+        height: '100%',
+        alignItems: 'center',
+    },
 
+    image: {
+        width: '90%',
+        height: '90%',
+        resizeMode: 'contain',
+        aspectRatio: 1,
+    },
 
 })

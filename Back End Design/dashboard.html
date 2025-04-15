@@ -36,10 +36,10 @@
                     <div className = "parking-tab-right">
                         { (lots[i]["isOpen"]  == true) ? 
                         <>
-                        <input type = "image" className = "status-image" src = "/open.png" id = "changeStatus"/>
+                        <input type = "image" className = "status-image" src = "open.png" id = "changeStatus"/>
                         <h5 style = {{margin: 0, fontWeight: 'normal', color: 'green', float: 'right'}}>Open</h5>
                         </>:<>
-                        <input type = "image" className = "status-image" src = "/closed.png" id = "changeStatus"/>
+                        <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus"/>
                         <h5 style = {{margin: 0, fontWeight: 'normal', color: 'red', float: 'right'}}>Closed</h5>
                         </>
                     }

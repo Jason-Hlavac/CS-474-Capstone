@@ -28,7 +28,7 @@ export function Header({ title, isReturnPage }: {title: string, isReturnPage : b
     </>)
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     headerWrapper: {
         height: '10%',
         width: '100%',

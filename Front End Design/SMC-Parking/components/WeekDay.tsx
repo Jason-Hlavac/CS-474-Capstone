@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from 'react-native';
-import { ComponentText } from './ComponentText';
 import { Header, styles } from '@/components/Header';
+import { ComponentText } from './ComponentText';
 import { TrafficGraph } from './Barchart';
 
 //Basic idea for rest of code
@@ -26,6 +26,7 @@ export function Day(){
 
         // </View>
         <>
+        <ComponentText displayText = { 'Current Traffic Level' }/>
         <View style = {weekStyles.weekContainer}>
         {
         week.map((day, index) => (
@@ -34,8 +35,11 @@ export function Day(){
         }
       </View>
         <hr style={styles.hr}/>
-        {/* <View style ={weekStyles.container}></View> */}
-        <TrafficGraph></TrafficGraph>
+        {/*  */}
+        <View style ={weekStyles.container}>
+            <TrafficGraph/>
+        </View>
+        
 
 
     </>
@@ -69,13 +73,14 @@ const weekStyles = StyleSheet.create({
     },
     container:{
         margin: "3%",
-        alignSelf: "flex-start",
-        justifyContent: "space-around",
-        height: "20%",
-        width: "90%",
+        alignSelf: "center",
+        justifyContent: "center",
+        height: "35%",
+        width: "80%",
         backgroundColor: "#d8e5f0",
         borderRadius: 15,
       },
+      
       currentDay:{
         fontFamily: 'Bree Serif',
         margin: '2%',

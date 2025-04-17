@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
+import {ScrollView} from 'react-native';
 
 export function TrafficGraph() {
   // Spreadsheet-style data (could be imported from a file)
@@ -28,22 +29,25 @@ export function TrafficGraph() {
   };
 
   return (
+    <ScrollView horizontal style = {{width: '80%', alignSelf: 'center', display: 'flex', borderRadius: 15}} persistentScrollbar = {true}>
     <BarChart
       data={chartData}
-      width={Dimensions.get('window').width}
+      width={Dimensions.get('window').width*1.5}
       height={220}
       yAxisLabel=""
       yAxisSuffix=""
+      withHorizontalLabels={false}
       chartConfig={{
         backgroundGradientFrom: '#ffffff',
         backgroundGradientTo: '#d8e5f0',
         decimalPlaces: 0,
         fillShadowGradient: '#FF0000', // Solid color
         fillShadowGradientOpacity: 1,
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        color: (opacity = 1) => `#d8e5f0)`,
         // barPercentage: 0.5
       }}
-      style={{ marginVertical: 10 }}
+      style={{ marginVertical: 10, alignSelf: 'center', paddingRight: 20}}
     />
+    </ScrollView>
   );
 }

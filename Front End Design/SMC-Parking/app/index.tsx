@@ -1,7 +1,7 @@
-import { Text, View, useWindowDimensions } from "react-native";
+import {View, useWindowDimensions } from "react-native";
 import { Header } from '@/components/Header';
 import { CurrentLevel } from '@/components/CurrentLevel';
-import { LevelHistory } from "@/components/LevelHistory";
+import { Day } from '@/components/WeekDay';
 
 
 export default function Index() {
@@ -13,7 +13,7 @@ export default function Index() {
       }}>
       <Header title = {'Parking Availability'} isReturnPage = {false} />
       <CurrentLevel/>
-      <LevelHistory />
+      <Day/>
     </View>
   );
 }

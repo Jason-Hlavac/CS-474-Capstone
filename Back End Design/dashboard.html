@@ -22,52 +22,122 @@
         const { useState } = React;
         const sampleLotData = [{name: "Main Commuter Lot", spaces: 150, isOpen: true}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}];
 
-    function PopulateLots(props){
-        const [lots] = useState(props.lotList);
-        const lotElements = [];
-        for(let i = 0; i < lots.length; i++){
-            lotElements.push(<>
-                <div className = "parking-lot" id = {i}>
-                    <div className = "parking-tab-left">
-                        <h4 style = {{margin: 0, fontWeight: 'normal'}}>{ lots[i]["name"] }</h4>
-                        <h5 style = {{margin: 0, fontWeight: 'normal'}}>{ lots[i]["spaces"]} spaces</h5>
-                    </div>
-                    
-                    <div className = "parking-tab-right">
-                        { (lots[i]["isOpen"]  == true) ? 
-                        <>
-                        <input type = "image" className = "status-image" src = "open.png" id = "changeStatus"/>
-                        <h5 style = {{margin: 0, fontWeight: 'normal', color: 'green', float: 'right'}}>Open</h5>
-                        </>:<>
-                        <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus"/>
-                        <h5 style = {{margin: 0, fontWeight: 'normal', color: 'red', float: 'right'}}>Closed</h5>
-                        </>
-                    }
-                    </div>
-                </div>
-            </>)
-        }
-        return(lotElements);
-    }
-
     //Lot Manager Functions
             function LotManager(props){
+                const [isAddMenuVisible, setIsAddMenuVisible] = useState(false);
+                const [isRemoveMenuVisible, setIsRemoveMenuVisible] = useState(false);
+
                 return(<>
                 <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%', alignContent : 'flex-start', maxHeight: '110%'}}>
                     <h1 style = {{color: '#013564', textAlign: 'center'}}>Parking lots</h1>
                     <div className="break"></div>
                 <div className = "lot-manager-container">
                     <div className = "lot-manager-inner-container">
-                        <PopulateLots lotList = {sampleLotData}/>
+                        <PopulateLots lotList = {sampleLotData} listType = {1}/>
                     </div>
                     <div className = "button-container">
-                        <button className = "dashboard-button">Add Parking Lot</button>
-                        <button className = "dashboard-button">Remove Parking Lot</button>
+                        <button className = "dashboard-button" onClick = {() => setIsAddMenuVisible(true)}>Add Parking Lot</button>
+                        <button className = "dashboard-button" onClick = {() => setIsRemoveMenuVisible(true)}>Remove Parking Lot</button>
                     </div>
                 </div>
+                </div>
+                <AddLotMenu isVisible = {isAddMenuVisible} setIsVisible = {() => setIsAddMenuVisible(false)} />
+                <RemoveLotMenu isVisible = {isRemoveMenuVisible} setIsVisible = {() => setIsRemoveMenuVisible(false)} />
+                </>)
+            }
+                    //Popup Menus
+            function AddLotMenu({isVisible, setIsVisible}){
+                return(<>
+                    <div className = {(isVisible == true) ? "popup-background": "hidden"}>
+                        <div className = "popup-outer">
+                            <div className = "popup-inner">
+                                <div className = "popup-text">Add a Parking Lot</div>
+                                <br/>
+                                <table className = "popup-table">
+                                    <tr>
+                                        <td><label className = "popup-label" forHtml = "add-lot-name">Lot Name:</label></td>
+                                        <td><input id = "add-lot-name" type = "text" className = "popup-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label className = "popup-label" forHtml = "add-lot-count">Spaces Count:</label></td>
+                                        <td><input id = "add-lot-count" type = "number" className = "popup-input"/></td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <br/>
+                                <div className = "button-container">
+                                    <button className = "dashboard-button" onClick = {() => setIsVisible()}>Add Lot</button>
+                                    <button className = "dashboard-button" onClick = {() => setIsVisible()}>Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>)
+            }
+
+            function RemoveLotMenu({isVisible, setIsVisible}){
+                return(<>
+                <div className = {(isVisible == true) ? "popup-background": "hidden"}>
+                    <div className = "popup-outer">
+                        <div className = "popup-inner">
+                            <div className = "popup-text">Remove Parking Lot</div>
+                            <div className = "popup-scroller">
+                                <PopulateLots lotList = {sampleLotData} listType = {2}/>
+                            </div>
+                            <br/>
+                            <div className = "button-container">
+                                <button className = "dashboard-button" onClick = {() => setIsVisible()}>Close Window</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 </>)
             }
+
+            function PopulateLots(props){
+                const [lots] = useState(props.lotList);
+                //Type 1 is for lot manager, type 2 is for remove lots
+                const type = props.listType;
+                const lotElements = [];
+                for(let i = 0; i < lots.length; i++){
+                    if(type == 1){
+                        lotElements.push(<>
+                            <div className = "parking-lot" id = {i}>
+                                <div className = "parking-tab-left">
+                                    <h4 style = {{margin: 0, fontWeight: 'normal'}}>{ lots[i]["name"] }</h4>
+                                    <h5 style = {{margin: 0, fontWeight: 'normal'}}>{ lots[i]["spaces"]} spaces</h5>
+                                </div>
+                                
+                                <div className = "parking-tab-right">
+                                    { (lots[i]["isOpen"]  == true) ? 
+                                    <>
+                                    <input type = "image" className = "status-image" src = "open.png" id = "changeStatus-${i}"/>
+                                    <h5 style = {{margin: 0, fontWeight: 'normal', color: 'green', float: 'right'}}>Open</h5>
+                                    </>:<>
+                                    <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus-${i}"/>
+                                    <h5 style = {{margin: 0, fontWeight: 'normal', color: 'red', float: 'right'}}>Closed</h5>
+                                    </>
+                                }
+                                </div>
+                            </div>
+                        </>)
+                    }else if(type == 2){
+                        lotElements.push(<>
+                            <div className = "parking-lot" id = {i}>
+                                <div className = "parking-tab-left">
+                                    <h4 style = {{margin: 0, fontWeight: 'normal'}}>{ lots[i]["name"] }</h4>
+                                    <h5 style = {{margin: 0, fontWeight: 'normal'}}>{ lots[i]["spaces"]} spaces</h5>
+                                </div>
+                                <div className = "parking-tab-right">
+                                    <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus-${i}"/>
+                                    <h5 style = {{margin: 0, fontWeight: 'normal', color: 'red', float: 'right'}}>Remove</h5>
+                                </div>
+                            </div>
+                        </>)
+                    }
+                }
+                return(lotElements);
+        }
 
     //Threshold Widget Functions
             function Thresholds(props){
@@ -82,9 +152,9 @@
                         <div className = "threshold-inner-container">
                             Threshold for highest traffic level
                             <div className = "threshold-text-container">
-                                <label className = "threshold-label" for = "quantity-input">Quantity (%):</label>
+                                <label className = "threshold-label" htmlFor = "quantity-input">Quantity (%):</label>
                                 <input type = "number" id = "quantity-input" className = "threshold-input" defaultValue = {quantity}/>
-                                <label className = "threshold-label" for = "time-input">Time (Mins):</label>
+                                <label className = "threshold-label" htmlFor = "time-input">Time (Mins):</label>
                                 <input type = "number" id = "time-input" className = "threshold-input" defaultValue = {time}/>
                             </div>
                         </div>
@@ -113,7 +183,7 @@
                     slider.push(<div className = "slider-inactive" key = {i}> </div>)
 
                 }
-                return(<><div className = "traffic-slider-subcontainer">{slider}</div> <div class="break"></div> <div className = "traffic-slider-text">{levelsList[trafficLevel-1]}</div></>);
+                return(<><div className = "traffic-slider-subcontainer">{slider}</div> <div className="break"></div> <div className = "traffic-slider-text">{levelsList[trafficLevel-1]}</div></>);
             }
 
             

@@ -32,7 +32,7 @@ export function NotificationScroller(){
                 <View style = {[styles.paddingCol, styles.col]}></View>
             </View>
 
-            <ScrollView style = {styles.scrollable}>
+            <ScrollView style = {styles.scrollable} contentContainerStyle = {{flexGrow: 1}}>
                 {rows}
 
             </ScrollView>
@@ -43,7 +43,7 @@ export function NotificationScroller(){
 
 const styles = StyleSheet.create({
     container: {
-        height: '40%',
+        height: '31%',
         marginTop: '2%',
         display: 'flex',
         flexDirection: 'column',
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
 
     scrollable:{
         width: '100%',
-        height: '80%',
         backgroundColor: '#D8E5F0',
         display: 'flex',
         flexDirection: 'column',

@@ -105,6 +105,11 @@ def index():
     """Serve the index page"""
     return render_template('index.html')
 
+# @app.route('/admin')
+# def admin():
+#     """Serve the index page"""
+#     return render_template('admin.html')
+
 @app.route('/video_feed')
 def video_feed():
     """Return the response generated along with the specific media type (MIME type)"""

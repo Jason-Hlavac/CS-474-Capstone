@@ -19,7 +19,7 @@
         <div class = "main-container" id = "main-container"></div>
         
         <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, forwardRef, useImperativeHandle, useRef } = React;
         const sampleLotData = [{name: "Main Commuter Lot", spaces: 150, isOpen: true}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}];
 
     //Lot Manager Functions
@@ -141,9 +141,95 @@
 
     //Threshold Widget Functions
             function Thresholds(props){
-                const [quantity] = useState(props.initialQuantity);
-                const [time] = useState(props.initialTime);
+                const [quantity, setQuantity] = useState(1);
+                const [time, setTime] = useState(1);
+                const [isLoading, setIsLoading] = React.useState(true);
+                const [noData, setNoData] = React.useState(false);
 
+                async function setThresholds(){
+                    setIsLoading(true);
+                    try {
+                        const response = await fetch('http://10.0.0.192:5000/thresholds', {
+                            method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ thresholds: [document.getElementById('quantity-input').value, document.getElementById('time-input').value]})
+                        });
+                        const data = await response.json();
+                        console.log(data)
+                        setQuantity(data.thresholds[0])
+                        setTime(data.thresholds[1])
+                        setNoData(false);
+                    } catch (e) {
+                        console.log(e);
+                        setNoData(true);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                }
+
+                async function resetThresholds(){
+                    setIsLoading(true);
+                    try {
+                        const response = await fetch('http://10.0.0.192:5000/thresholds', {
+                        method: 'GET'
+                        });
+                        const data = await response.json();
+                        console.log(data)
+                        setQuantity(data.thresholds[0])
+                        setTime(data.thresholds[1])
+                        setNoData(false);
+                    } catch (e) {
+                        setNoData(true);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                }
+
+                useEffect(() => {
+                const fetchData = async () => {
+                    setIsLoading(true);
+                    try {
+                        const response = await fetch('http://10.0.0.192:5000/thresholds', {
+                        method: 'GET'
+                        });
+                        const data = await response.json();
+                        console.log(data)
+                        setQuantity(data.thresholds[0])
+                        setTime(data.thresholds[1])
+                        setNoData(false);
+                    } catch (e) {
+                        setNoData(true);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                };
+                fetchData();
+                }, []);
+                
+
+                if(isLoading){
+                    return(<>
+                    <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%'}}>
+                        <h1 style = {{color: '#013564', textAlign: 'center'}}>Thresholds</h1>
+                        <div className="break"></div>
+                        <div className = "threshold-container">
+                            <Loading/>
+                        </div>
+                        </div>
+                        </>)
+                }else if(noData){
+                    return(<>
+                    <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%'}}>
+                    <h1 style = {{color: '#013564', textAlign: 'center'}}>Thresholds</h1>
+                    <div className="break"></div>
+                    <div className = "threshold-container">
+                                <NoData/>
+                            </div>
+                        </div>
+                            </>)
+                }else{
                 return(<>
                 <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%'}}>
                     <h1 style = {{color: '#013564', textAlign: 'center'}}>Thresholds</h1>
@@ -159,43 +245,119 @@
                             </div>
                         </div>
                     <div className = "button-container">
-                        <button className = "dashboard-button">Set Threshold</button>
-                        <button className = "dashboard-button">Reset Changes</button>
+                        <button className = "dashboard-button" onClick = {() => setThresholds()}>Set Threshold</button>
+                        <button className = "dashboard-button" onClick = {() => resetThresholds()}>Reset Changes</button>
                     </div>
                     </div>
                 </div>
                 </>)
             }
+            }
+
     // Traffic Slider Widget Functions
-            function TrafficSlider(props){
-                const [trafficLevel] = useState(props.initialTrafficLevel);
+            const TrafficSlider = forwardRef(function TrafficSlider(props, ref){
+                const [trafficLevel, setTrafficLevel] = useState(props.initialTrafficLevel);
                 const maxTrafficLevel = 9;
                 const levelsList = ["No Traffic", "Slight Traffic", "Light Traffic", "Moderate Traffic", "Busy Traffic", "Heavy Traffic", "Very Heavy Traffic", "Extreme Traffic", "Standstill"];
-                const slider = [];
-                //Create the Traffic bars
-                for(var i = 1; i < trafficLevel; i++){
-                    slider.push(<div className = "slider-active" key = {i}> </div>)
+                useImperativeHandle(ref, function() {
+                    return {
+                        getTrafficLevel: function() {
+                            return trafficLevel;
+                        },
+                        setTrafficLevel: function(level) {
+                            setTrafficLevel(level);
+                        },
+                    };
+                });
+
+                const slider = Array.from({ length: maxTrafficLevel }, (_, i) => {
+                const level = i + 1;
+                if (level < trafficLevel) {
+                    return (
+                        <div className="slider-active" key={level}>
+                            <button 
+                                onClick={() => setTrafficLevel(level)} 
+                                className="traffic-level-button"
+                            />
+                        </div>
+                    );
+                } else if (level === trafficLevel) {
+                    return (
+                        <div className="slider-current" key={level}>
+                            <button 
+                                onClick={() => setTrafficLevel(level)} 
+                                className="traffic-level-button"
+                            />
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div className="slider-inactive" key={level}>
+                            <button 
+                                onClick={() => setTrafficLevel(level)} 
+                                className="traffic-level-button"
+                            />
+                        </div>
+                    );
                 }
-
-                slider.push(<div className = "slider-current" key = {trafficLevel}> </div>)
-
-                for(var i = trafficLevel+1; i <= maxTrafficLevel; i++){
-                    slider.push(<div className = "slider-inactive" key = {i}> </div>)
-
-                }
+            });
                 return(<><div className = "traffic-slider-subcontainer">{slider}</div> <div className="break"></div> <div className = "traffic-slider-text">{levelsList[trafficLevel-1]}</div></>);
-            }
+            });
 
             
             function TrafficLevel(){
                 const [isLoading, setIsLoading] = React.useState(true);
                 const [noData, setNoData] = React.useState(false);
                 const [trafficData, setTrafficData] = React.useState(null);
+                const trafficSliderRef = useRef();
+                //SET THE TRAFFIC LEVEL
+                
+                async function setTrafficLevel(){
+                    setIsLoading(true);
+                    try {
+                        const post = await fetch('http://10.0.0.192:5000/trafficLevel', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ trafficLevel: trafficSliderRef.current.getTrafficLevel()})
+                        });
+
+                        const data = await post.json();
+                        setTrafficData(data.trafficLevel);
+                        setNoData(false);
+                    } catch (e) {
+                        setNoData(true);
+                        console.log(e);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                }
+
+                async function resetTrafficSelection(){
+                    setIsLoading(true);
+                    try {
+                        const response = await fetch('http://10.0.0.192:5000/trafficLevel', {
+                        method: 'GET'
+                        });
+                        const data = await response.json();
+                        setTrafficData(data.trafficLevel);
+                        setNoData(false);
+                    } catch (e) {
+                        setNoData(true);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                }
+                
+            //GET THE TRAFFIC LEVEL
                 useEffect(() => {
                 const fetchData = async () => {
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/trafficLevel');
+                        const response = await fetch('http://10.0.0.192:5000/trafficLevel', {
+                        method: 'GET'
+                        });
                         const data = await response.json();
                         setTrafficData(data.trafficLevel);
                         setNoData(false);
@@ -235,11 +397,11 @@
                         <div className = "break"></div>
                         <div className = "traffic-level-container">
                         <div className = "traffic-slider-container">
-                            <TrafficSlider initialTrafficLevel = {trafficData} />
+                            <TrafficSlider initialTrafficLevel = {trafficData} ref = {trafficSliderRef}/>
                         </div>
                         <div className = "button-container">
-                            <button className = "dashboard-button">Set Traffic Level</button>
-                            <button className = "dashboard-button">Reset Selection</button>
+                            <button className = "dashboard-button" onClick = {() => setTrafficLevel()}>Set Traffic Level</button>
+                            <button className = "dashboard-button" onClick = {() => resetTrafficSelection()}>Reset Selection</button>
                         </div>
                     </div>
                     </div>

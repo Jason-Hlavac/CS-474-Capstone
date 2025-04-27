@@ -17,7 +17,8 @@ rtsp_url = "rtsp://192.168.50.201:554/1/h264major"
 stream_active = True
 # Face detection flag
 detect_faces = True
-trafficLevel = 6
+level = 6
+thresholdsLevels = [5, 10]
 
 def generate_frames():
     # Access the global variables
@@ -129,8 +130,30 @@ def toggle_detection():
 # API Definitions
 @app.route('/trafficLevel', methods = ['GET', 'POST'])
 def trafficLevel():
+    global level
     if(request.method == 'GET'):
-        return jsonify({'trafficLevel': trafficLevel})
+        return jsonify({'status': 'success', 'trafficLevel': level})
+    elif(request.method == 'POST'):
+        try: 
+            data = request.get_json()
+            level = data["trafficLevel"]
+            return jsonify({'status': 'success', 'trafficLevel': level})
+        except:
+            return jsonify({'status': 'error'}), 400
+
+
+@app.route('/thresholds', methods = ['GET', 'POST'])
+def thresholds():
+    global thresholdsLevels
+    if(request.method == 'GET'):
+        return jsonify({'status': 'success', 'thresholds': thresholdsLevels})
+    elif(request.method == 'POST'):
+        try: 
+            data = request.get_json()
+            thresholdsLevels = data["thresholds"]
+            return jsonify({'status': 'success', 'thresholds': thresholdsLevels})
+        except:
+            return jsonify({'status': 'error'}), 400
 
 if __name__ == '__main__':
     # Make sure templates directory exists

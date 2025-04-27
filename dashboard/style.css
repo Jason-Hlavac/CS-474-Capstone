@@ -181,10 +181,12 @@ html body{
 
 .slider-active, .slider-current{
     background-color: var(--smc-red);
+    visibility: hidden;
 }
 
 .slider-inactive{
     background-color: var(--smc-dark-gray);
+    visibility: hidden;
 }
 
 .slider-current{
@@ -193,6 +195,16 @@ html body{
     border-radius: 60px;
 }
 
+.traffic-level-button{
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    border: none;
+    background-color: white;
+    margin: 0;
+    visibility: visible;
+    background-color: inherit;
+}
 /* Dashboard Button Styles */
 
 .button-container{
@@ -221,6 +233,7 @@ html body{
     border-width: 0.5px;
     border-color: rgba(0,0,0,0.1);
     width: 80%;
+    align-content: center;
 
 }
 

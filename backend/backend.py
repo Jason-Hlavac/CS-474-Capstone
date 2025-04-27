@@ -1,10 +1,12 @@
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, jsonify, request
+from flask_cors import CORS
 import cv2
 import threading
 import time
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 # Global variables
 output_frame = None
@@ -15,6 +17,7 @@ rtsp_url = "rtsp://192.168.50.201:554/1/h264major"
 stream_active = True
 # Face detection flag
 detect_faces = True
+trafficLevel = 6
 
 def generate_frames():
     # Access the global variables
@@ -122,6 +125,12 @@ def toggle_detection():
     global detect_faces
     detect_faces = not detect_faces
     return {"status": "success", "detecting": detect_faces}
+
+# API Definitions
+@app.route('/trafficLevel', methods = ['GET', 'POST'])
+def trafficLevel():
+    if(request.method == 'GET'):
+        return jsonify({'trafficLevel': trafficLevel})
 
 if __name__ == '__main__':
     # Make sure templates directory exists

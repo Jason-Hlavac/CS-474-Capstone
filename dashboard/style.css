@@ -146,6 +146,7 @@ html body{
     border-width: 0.5px;
     border-color: rgba(0,0,0,0.1);
     width: 80%;
+    align-content: center;
 
 
 }

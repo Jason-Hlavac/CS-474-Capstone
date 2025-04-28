@@ -20,20 +20,85 @@
         
         <script type="text/babel">
         const { useState, useEffect, forwardRef, useImperativeHandle, useRef } = React;
-        const sampleLotData = [{name: "Main Commuter Lot", spaces: 150, isOpen: true}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}, {name: "Garaventa Lot", spaces: 40, isOpen: false}];
 
     //Lot Manager Functions
             function LotManager(props){
                 const [isAddMenuVisible, setIsAddMenuVisible] = useState(false);
                 const [isRemoveMenuVisible, setIsRemoveMenuVisible] = useState(false);
+                const [lotData, setLotData] = useState([{name: "Temp Lot", spaces: 1, isOpen: true}]);
+                const [isLoading, setIsLoading] = React.useState(true);
+                const [noData, setNoData] = React.useState(false);
 
+                async function updateLotList(newLotList){
+                    setIsLoading(true);
+                    try {
+                        const response = await fetch('http://10.0.0.192:5000/lotManager', {
+                            method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({lotData: newLotList})
+                        });
+                        const data = await response.json();
+                        setLotData(data.lotData);
+                        setNoData(false);
+                    } catch (e) {
+                        console.log(e);
+                        setNoData(true);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                }
+
+                useEffect(() => {
+                const fetchData = async () => {
+                    setIsLoading(true);
+                    try {
+                        const response = await fetch('http://10.0.0.192:5000/lotManager', {
+                        method: 'GET'
+                        });
+                        const data = await response.json();
+                        console.log(data)
+                        setLotData(data.lotData);
+                        setNoData(false);
+                    } catch (e) {
+                        setNoData(true);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                };
+                fetchData();
+                }, []);
+
+                if(isLoading){
+                    return(<>
+                    <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%', alignContent : 'flex-start', maxHeight: '110%'}}>
+                    <h1 style = {{color: '#013564', textAlign: 'center'}}>Parking lots</h1>
+                    <div className="break"></div>
+                    <div className = "lot-manager-container">
+                            <Loading/>
+                        </div>
+                        </div>
+                        </>)
+                }else if(noData){
+                    return(<>
+                    <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%', alignContent : 'flex-start', maxHeight: '110%'}}>
+                    <h1 style = {{color: '#013564', textAlign: 'center'}}>Parking lots</h1>
+                    <div className="break"></div>
+                    <div className = "lot-manager-container">
+                                <NoData/>
+                        </div>
+                        </div>
+                        </>)
+                }else{
+                    console.log()
                 return(<>
                 <div style = {{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '100%', alignContent : 'flex-start', maxHeight: '110%'}}>
                     <h1 style = {{color: '#013564', textAlign: 'center'}}>Parking lots</h1>
                     <div className="break"></div>
                 <div className = "lot-manager-container">
                     <div className = "lot-manager-inner-container">
-                        <PopulateLots lotList = {sampleLotData} listType = {1}/>
+                        <PopulateLots lotList = {lotData} listType = {1} changeLots = {updateLotList}/>
                     </div>
                     <div className = "button-container">
                         <button className = "dashboard-button" onClick = {() => setIsAddMenuVisible(true)}>Add Parking Lot</button>
@@ -41,12 +106,20 @@
                     </div>
                 </div>
                 </div>
-                <AddLotMenu isVisible = {isAddMenuVisible} setIsVisible = {() => setIsAddMenuVisible(false)} />
-                <RemoveLotMenu isVisible = {isRemoveMenuVisible} setIsVisible = {() => setIsRemoveMenuVisible(false)} />
+                <AddLotMenu isVisible = {isAddMenuVisible} setIsVisible = {() => setIsAddMenuVisible(false)} updateLots = {updateLotList} lotList = {lotData}/>
+                <RemoveLotMenu isVisible = {isRemoveMenuVisible} setIsVisible = {() => setIsRemoveMenuVisible(false)} lotList = {lotData} updateLots = {updateLotList} />
                 </>)
+                }
             }
                     //Popup Menus
-            function AddLotMenu({isVisible, setIsVisible}){
+            function AddLotMenu({isVisible, setIsVisible, updateLots, lotList}){
+                function processClick(){
+                    if(document.getElementById('add-lot-name').value != '' && document.getElementById('add-lot-count')!= ''){
+                        lotList.push({name: document.getElementById('add-lot-name').value, spaces: document.getElementById('add-lot-count').value, isOpen: true});
+                        updateLots(lotList);
+                    }
+                }
+
                 return(<>
                     <div className = {(isVisible == true) ? "popup-background": "hidden"}>
                         <div className = "popup-outer">
@@ -55,18 +128,18 @@
                                 <br/>
                                 <table className = "popup-table">
                                     <tr>
-                                        <td><label className = "popup-label" forHtml = "add-lot-name">Lot Name:</label></td>
+                                        <td><label className = "popup-label" htmlFor = "add-lot-name">Lot Name:</label></td>
                                         <td><input id = "add-lot-name" type = "text" className = "popup-input"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label className = "popup-label" forHtml = "add-lot-count">Spaces Count:</label></td>
+                                        <td><label className = "popup-label" htmlFor = "add-lot-count">Spaces Count:</label></td>
                                         <td><input id = "add-lot-count" type = "number" className = "popup-input"/></td>
                                     </tr>
                                 </table>
                                 <br/>
                                 <br/>
                                 <div className = "button-container">
-                                    <button className = "dashboard-button" onClick = {() => setIsVisible()}>Add Lot</button>
+                                    <button className = "dashboard-button" onClick = {() => processClick()}>Add Lot</button>
                                     <button className = "dashboard-button" onClick = {() => setIsVisible()}>Cancel</button>
                                 </div>
                             </div>
@@ -75,14 +148,16 @@
                 </>)
             }
 
-            function RemoveLotMenu({isVisible, setIsVisible}){
+            function RemoveLotMenu({isVisible, setIsVisible, lotList, updateLots}){
+                const [lotData, setLotData] = useState(lotList);
+
                 return(<>
                 <div className = {(isVisible == true) ? "popup-background": "hidden"}>
                     <div className = "popup-outer">
                         <div className = "popup-inner">
                             <div className = "popup-text">Remove Parking Lot</div>
                             <div className = "popup-scroller">
-                                <PopulateLots lotList = {sampleLotData} listType = {2}/>
+                                <PopulateLots lotList = {lotData} listType = {2} changeLots = {updateLots}/>
                             </div>
                             <br/>
                             <div className = "button-container">
@@ -95,10 +170,21 @@
             }
 
             function PopulateLots(props){
-                const [lots] = useState(props.lotList);
+                const [lots, setLots] = useState(props.lotList);
                 //Type 1 is for lot manager, type 2 is for remove lots
                 const type = props.listType;
                 const lotElements = [];
+                function changeOpen(i){
+                    const newLots = [...lots];
+                    newLots[i] = {...newLots[i], isOpen: !newLots[i].isOpen};
+                    props.changeLots(newLots);
+                }
+
+                function removeLot(i){
+                    const newLots = [...lots];
+                    newLots.splice(i, 1);
+                    props.changeLots(newLots);
+                }
                 for(let i = 0; i < lots.length; i++){
                     if(type == 1){
                         lotElements.push(<>
@@ -111,10 +197,10 @@
                                 <div className = "parking-tab-right">
                                     { (lots[i]["isOpen"]  == true) ? 
                                     <>
-                                    <input type = "image" className = "status-image" src = "open.png" id = "changeStatus-${i}"/>
+                                    <input type = "image" className = "status-image" src = "open.png" id = "changeStatus-${i}" onClick = {() => changeOpen(i)}/>
                                     <h5 style = {{margin: 0, fontWeight: 'normal', color: 'green', float: 'right'}}>Open</h5>
                                     </>:<>
-                                    <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus-${i}"/>
+                                    <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus-${i}" onClick = {() => changeOpen(i)}/>
                                     <h5 style = {{margin: 0, fontWeight: 'normal', color: 'red', float: 'right'}}>Closed</h5>
                                     </>
                                 }
@@ -129,7 +215,7 @@
                                     <h5 style = {{margin: 0, fontWeight: 'normal'}}>{ lots[i]["spaces"]} spaces</h5>
                                 </div>
                                 <div className = "parking-tab-right">
-                                    <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus-${i}"/>
+                                    <input type = "image" className = "status-image" src = "closed.png" id = "changeStatus-${i}" onClick = {() => removeLot(i)}/>
                                     <h5 style = {{margin: 0, fontWeight: 'normal', color: 'red', float: 'right'}}>Remove</h5>
                                 </div>
                             </div>

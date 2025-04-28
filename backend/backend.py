@@ -19,6 +19,8 @@ stream_active = True
 detect_faces = True
 level = 6
 thresholdsLevels = [5, 10]
+lotData = [{'name': "Main Commuter Lot", 'spaces': 150, 'isOpen': True}, {'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False}, {'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False}]
+
 
 def generate_frames():
     # Access the global variables
@@ -152,6 +154,19 @@ def thresholds():
             data = request.get_json()
             thresholdsLevels = data["thresholds"]
             return jsonify({'status': 'success', 'thresholds': thresholdsLevels})
+        except:
+            return jsonify({'status': 'error'}), 400
+
+@app.route('/lotManager', methods = ['GET', 'POST'])
+def lotManager():
+    global lotData
+    if(request.method == 'GET'):
+        return jsonify({'status': 'success', 'lotData': lotData})
+    elif(request.method == 'POST'):
+        try: 
+            data = request.get_json()
+            lotData = data["lotData"]
+            return jsonify({'status': 'success', 'lotData': lotData})
         except:
             return jsonify({'status': 'error'}), 400
 

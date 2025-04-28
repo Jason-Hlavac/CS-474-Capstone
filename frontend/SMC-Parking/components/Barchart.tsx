@@ -1,25 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
-import {ScrollView} from 'react-native';
+import {ScrollView, Image, View, StyleSheet, Dimensions, Text} from 'react-native';
 
 export function TrafficGraph() {
   // Spreadsheet-style data (could be imported from a file)
-  const spreadsheetData = [
-    { time: '6:00', value: 20 },
-    { time: '7:00', value: 45 },
-    { time: '8:00', value: 28 },
-    { time: '9:00', value: 80 },
-    { time: '10:00', value: 99 },
-    { time: '11:00', value: 43 },
-    { time: '12:00', value: 20 },
-    { time: '1:00', value: 45 },
-    { time: '2:00', value: 28 },
-    { time: '3:00', value: 80 },
-    { time: '4:00', value: 99 },
-    { time: '5:00', value: 43 }
-  ];
+  const [spreadsheetData, setSpreadSheetData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [noData, setNoData] = useState(false);
 
+  useEffect(() =>{
+          async function fetchSpreadSheet(){
+              try{
+                  setIsLoading(true);
+                  const response = await fetch('http://10.0.0.192:5000/history');
+                  const data = await response.json();
+                  setSpreadSheetData(data.historyData);
+                  console.log(data);
+              }catch (e){
+                  setNoData(true);
+                  console.log(e)
+              }finally{
+                  setIsLoading(false);
+              }
+          }
+          fetchSpreadSheet();
+      }, []);
+    if(isLoading){
+      return(
+        <View style = {styles.staticContainer}>
+          <Image style = {styles.loadingImage} source = {require('../assets/images/loading.gif')} />
+        </View>
+      )
+    }else if(noData){
+      return(
+        <View style = {styles.staticContainer}>
+          <Text style = {styles.noDataText}>Could Not Retrieve Data</Text>
+        </View>
+      )
+    }else{
   // Transform spreadsheet data to chart format
   const chartData = {
     labels: spreadsheetData.map(entry => entry.time),
@@ -50,4 +68,31 @@ export function TrafficGraph() {
     />
     </ScrollView>
   );
+  }
 }
+
+
+const styles = StyleSheet.create({
+  staticContainer: {
+    width: '80%',
+    display: 'flex',
+    flex: 1,
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+
+  loadingImage: {
+    height: '100%',
+    alignSelf: 'center',
+    
+  },
+  noDataText: {
+    fontFamily: 'Bree Serif',
+    fontSize: 20,
+    color: '#013564',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
+  }
+})

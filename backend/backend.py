@@ -20,7 +20,20 @@ detect_faces = True
 level = 6
 thresholdsLevels = [5, 10]
 lotData = [{'name': "Main Commuter Lot", 'spaces': 150, 'isOpen': True}, {'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False}, {'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False},{'name': "Garaventa Lot", 'spaces': 40, 'isOpen': False}]
-
+historyData = [
+    { 'time': '6:00', 'value': 20 },
+    { 'time': '7:00', 'value': 45 },
+    { 'time': '8:00', 'value': 28 },
+    { 'time': '9:00', 'value': 80 },
+    { 'time': '10:00', 'value': 99 },
+    { 'time': '11:00', 'value': 43 },
+    { 'time': '12:00', 'value': 20 },
+    { 'time': '1:00', 'value': 45 },
+    { 'time': '2:00', 'value': 28 },
+    { 'time': '3:00', 'value': 80 },
+    { 'time': '4:00', 'value': 99 },
+    { 'time': '5:00', 'value': 43 }
+  ]
 
 def generate_frames():
     # Access the global variables
@@ -169,6 +182,13 @@ def lotManager():
             return jsonify({'status': 'success', 'lotData': lotData})
         except:
             return jsonify({'status': 'error'}), 400
+
+@app.route('/history', methods = ['GET'])
+def history():
+    global historyData
+    if(request.method == 'GET'):
+        return jsonify({'status': 'success', 'historyData': historyData})
+
 
 if __name__ == '__main__':
     # Make sure templates directory exists

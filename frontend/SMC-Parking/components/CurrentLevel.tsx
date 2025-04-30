@@ -3,6 +3,8 @@ import { ComponentText } from './ComponentText';
 import { CurrentLevelBars } from './CurrentLevelBars';
 import React, { useState, useEffect } from 'react';
 
+const ip = '127.0.0.1:5000'
+
 export function CurrentLevel(){
     const [currLevel, setCurrLevel] = useState(5);
     const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +13,7 @@ export function CurrentLevel(){
         async function fetchTrafficLevel(){
             try{
                 setIsLoading(true);
-                const response = await fetch('http://10.0.0.192:5000/trafficLevel');
+                const response = await fetch('http://'+ ip + '/trafficLevel');
                 const data = await response.json();
                 setCurrLevel(data.trafficLevel);
                 console.log(data);

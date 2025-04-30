@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart } from 'react-native-chart-kit';
 import {ScrollView, Image, View, StyleSheet, Dimensions, Text} from 'react-native';
+const ip = '127.0.0.1:5000'
 
 export function TrafficGraph() {
   // Spreadsheet-style data (could be imported from a file)
@@ -12,7 +13,7 @@ export function TrafficGraph() {
           async function fetchSpreadSheet(){
               try{
                   setIsLoading(true);
-                  const response = await fetch('http://10.0.0.192:5000/history');
+                  const response = await fetch('http://'+ ip + '/history');
                   const data = await response.json();
                   setSpreadSheetData(data.historyData);
                   console.log(data);

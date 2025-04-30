@@ -32,7 +32,7 @@
                 async function updateLotList(newLotList){
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/lotManager', {
+                        const response = await fetch('http://10.0.0.25:5000/lotManager', {
                             method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -54,7 +54,7 @@
                 const fetchData = async () => {
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/lotManager', {
+                        const response = await fetch('http://10.0.0.25:5000/lotManager', {
                         method: 'GET'
                         });
                         const data = await response.json();
@@ -112,42 +112,45 @@
                 }
             }
                     //Popup Menus
-            function AddLotMenu({isVisible, setIsVisible, updateLots, lotList}){
-                function processClick(){
-                    if(document.getElementById('add-lot-name').value != '' && document.getElementById('add-lot-count')!= ''){
-                        lotList.push({name: document.getElementById('add-lot-name').value, spaces: document.getElementById('add-lot-count').value, isOpen: true});
-                        updateLots(lotList);
-                    }
-                }
+                    function AddLotMenu({isVisible, setIsVisible, updateLots, lotList}){
+    function processClick(){
+        const lotName = document.getElementById('add-lot-name').value;
+        const lotSpaces = parseInt(document.getElementById('add-lot-count').value, 10);
+        if(lotName && !isNaN(lotSpaces) && lotSpaces > 0){
+            lotList.push({name: lotName, spaces: lotSpaces, isOpen: true});
+            updateLots(lotList);
+        }
+    }
 
-                return(<>
-                    <div className = {(isVisible == true) ? "popup-background": "hidden"}>
-                        <div className = "popup-outer">
-                            <div className = "popup-inner">
-                                <div className = "popup-text">Add a Parking Lot</div>
-                                <br/>
-                                <table className = "popup-table">
-                                    <tr>
-                                        <td><label className = "popup-label" htmlFor = "add-lot-name">Lot Name:</label></td>
-                                        <td><input id = "add-lot-name" type = "text" className = "popup-input"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label className = "popup-label" htmlFor = "add-lot-count">Spaces Count:</label></td>
-                                        <td><input id = "add-lot-count" type = "number" className = "popup-input"/></td>
-                                    </tr>
-                                </table>
-                                <br/>
-                                <br/>
-                                <div className = "button-container">
-                                    <button className = "dashboard-button" onClick = {() => processClick()}>Add Lot</button>
-                                    <button className = "dashboard-button" onClick = {() => setIsVisible()}>Cancel</button>
-                                </div>
-                            </div>
-                        </div>
+    return(<>
+        <div className={(isVisible == true) ? "popup-background": "hidden"}>
+            <div className="popup-outer">
+                <div className="popup-inner">
+                    <div className="popup-text">Add a Parking Lot</div>
+                    <br/>
+                    <table className="popup-table">
+                        <tbody>
+                            <tr>
+                                <td><label className="popup-label" htmlFor="add-lot-name">Lot Name:</label></td>
+                                <td><input id="add-lot-name" type="text" className="popup-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><label className="popup-label" htmlFor="add-lot-count">Spaces Count:</label></td>
+                                <td><input id="add-lot-count" type="number" className="popup-input" min="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <br/>
+                    <div className="button-container">
+                        <button className="dashboard-button" onClick={() => processClick()}>Add Lot</button>
+                        <button className="dashboard-button" onClick={() => setIsVisible()}>Cancel</button>
                     </div>
-                </>)
-            }
-
+                </div>
+            </div>
+        </div>
+    </>);
+}
             function RemoveLotMenu({isVisible, setIsVisible, lotList, updateLots}){
                 const [lotData, setLotData] = useState(lotList);
 
@@ -235,7 +238,7 @@
                 async function setThresholds(){
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/thresholds', {
+                        const response = await fetch('http://10.0.0.25:5000/thresholds', {
                             method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -258,7 +261,7 @@
                 async function resetThresholds(){
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/thresholds', {
+                        const response = await fetch('http://10.0.0.25:5000/thresholds', {
                         method: 'GET'
                         });
                         const data = await response.json();
@@ -277,7 +280,7 @@
                 const fetchData = async () => {
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/thresholds', {
+                        const response = await fetch('http://10.0.0.25:5000/thresholds', {
                         method: 'GET'
                         });
                         const data = await response.json();
@@ -401,7 +404,7 @@
                 async function setTrafficLevel(){
                     setIsLoading(true);
                     try {
-                        const post = await fetch('http://10.0.0.192:5000/trafficLevel', {
+                        const post = await fetch('http://10.0.0.25:5000/trafficLevel', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -423,7 +426,7 @@
                 async function resetTrafficSelection(){
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/trafficLevel', {
+                        const response = await fetch('http://10.0.0.25:5000/trafficLevel', {
                         method: 'GET'
                         });
                         const data = await response.json();
@@ -441,7 +444,7 @@
                 const fetchData = async () => {
                     setIsLoading(true);
                     try {
-                        const response = await fetch('http://10.0.0.192:5000/trafficLevel', {
+                        const response = await fetch('http://10.0.0.25:5000/trafficLevel', {
                         method: 'GET'
                         });
                         const data = await response.json();

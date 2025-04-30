@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView, Image, TouchableOpacity} from 'react-native';
 
-const dummyData = [{day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}, {day: 'Tuesday', arrivalTime: { hours: 0, minutes: 30 }, travelTime: { hours: 0, minutes: 30 }}];
+type NotificationType = {
+    day: string;
+    arrivalTime: { hours: number; minutes: number };
+    travelTime: { hours: number; minutes: number };
+  };
+  
+  type StoredData = {
+    isNotificationToggled: boolean;
+    notificationData: NotificationType[];
+  };
 
-export function NotificationScroller(){
-    const [notificationData, setNotificationData] = useState(dummyData);
+export function NotificationScroller({notificationData, setNotificationData}: {notificationData : NotificationType[]; setNotificationData: React.Dispatch<React.SetStateAction<NotificationType[]>>;}){
     const rows = [];
+
+    function removeNotification(index: number) {
+        setNotificationData(prevData => prevData.filter((_, i) => i !== index));
+    }
 
     for(let i = 0; i < notificationData.length; i++){
         const isPM = notificationData[i].arrivalTime.hours >= 12;
@@ -15,7 +27,7 @@ export function NotificationScroller(){
                 <View style = {[styles.dayCol, styles.col]}>{notificationData[i]['day']}</View>
                 <View style = {[styles.arriveCol, styles.col]}>{String(notificationData[i].arrivalTime.hours%12 || 12).padStart(2, '0') + ":" + String(notificationData[i].arrivalTime.minutes).padStart(2, '0') + " " + amOrPm}</View>
                 <View style = {[styles.travelCol, styles.col]}>{notificationData[i]['travelTime'].hours + ':' +notificationData[i]['travelTime'].minutes}</View>
-                <View style = {[styles.removeCol, styles.col]}><TouchableOpacity style = {styles.touchable}><Image style = {styles.image} source= {require('@/assets/images/closed.png')}/></TouchableOpacity></View>
+                <View style = {[styles.removeCol, styles.col]}><TouchableOpacity style = {styles.touchable} onPress = {() => removeNotification(i)}><Image style = {styles.image} source= {require('@/assets/images/closed.png')}/></TouchableOpacity></View>
                 <View style = {styles.paddingCol}></View>
             </View>
             </>)

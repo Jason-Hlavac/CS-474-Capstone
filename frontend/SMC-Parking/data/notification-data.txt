@@ -1,0 +1,15 @@
+{
+  "isNotificationToggled": true,
+  "notificationData": [
+    {
+      "day": "Monday",
+      "arrivalTime": { "hours": 8, "minutes": 30 },
+      "travelTime": { "hours": 0, "minutes": 45 }
+    },
+    {
+      "day": "Tuesday",
+      "arrivalTime": { "hours": 9, "minutes": 0 },
+      "travelTime": { "hours": 1, "minutes": 0 }
+    }
+  ]
+}

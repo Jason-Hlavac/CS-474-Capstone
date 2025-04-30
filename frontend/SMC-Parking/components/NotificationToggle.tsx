@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Switch } from 'react-native';
 
-export function NotificationToggle(){
-    const [currState, setCurrState] = useState(false);
+
+
+export function NotificationToggle({ isNotificationToggled, setIsNotificationToggled }: { isNotificationToggled: boolean, setIsNotificationToggled: React.Dispatch<React.SetStateAction<boolean>> }){
     function toggleSwitch(){
-        setCurrState(currState => !currState);
+        setIsNotificationToggled((isNotificationToggled: boolean) => !isNotificationToggled);
     }
 
     return(<>
         <View style = {styles.container}>
             <Text style = {styles.notificationText}>Recieve Notifications</Text>
-            <Switch trackColor={{false:'#D8E5F0', true: '#D8E5F0'}} thumbColor={currState ? '#D82732' : '#D82732'} onValueChange = {toggleSwitch} value = {currState}></Switch>
+            <Switch trackColor={{false:'#D8E5F0', true: '#D8E5F0'}} thumbColor={isNotificationToggled ? '#D82732' : '#D82732'} onValueChange = {toggleSwitch} value = {isNotificationToggled}></Switch>
         </View>
         <View style = {styles.hr} />
     </>)

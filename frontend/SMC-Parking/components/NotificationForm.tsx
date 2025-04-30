@@ -3,7 +3,18 @@ import { StyleSheet, View, Button, Text} from 'react-native';
 import { TimePickerModal } from 'react-native-paper-dates';
 import {Picker} from '@react-native-picker/picker';
 
-export function NotificationForm(){
+type NotificationType = {
+    day: string;
+    arrivalTime: { hours: number; minutes: number };
+    travelTime: { hours: number; minutes: number };
+  };
+  
+  type StoredData = {
+    isNotificationToggled: boolean;
+    notificationData: NotificationType[];
+  };
+
+export function NotificationForm({notificationData, setNotificationData}: {notificationData : NotificationType[]; setNotificationData: React.Dispatch<React.SetStateAction<NotificationType[]>>;}){
     const [selectedDay, setSelectedDay] = useState('mon');
     const [arrivalTime, setArrivalTime] = useState({ hours: 12, minutes: 0 });
     const [arrivalVisible, setArrivalVisible] = useState(false);
@@ -13,9 +24,7 @@ export function NotificationForm(){
     const [travelTime, setTravelTime] = useState({ hours: 0, minutes: 30 });
     const [travelVisible, setTravelVisible] = useState(false);
     function processForm(){
-        console.log(selectedDay);
-        console.log(arrivalTime);
-        console.log(travelTime);
+        setNotificationData(([...notificationData, { day: selectedDay, arrivalTime: arrivalTime, travelTime: travelTime}]));
     }
 
     return(<>

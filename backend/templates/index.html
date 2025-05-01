@@ -79,12 +79,13 @@
         <div class="stream-container">
             <img src="{{ url_for('video_feed') }}" class="video-stream" alt="Video stream unavailable">
         </div>
-        <div class="controls">
+        <!-- <div class="controls">
             <button id="toggleDetection">Toggle Face Detection</button>
-        </div>
+        </div> -->
         <div class="status">
             <p>Stream Status: <span id="stream-status">Active</span></p>
             <p>Face Detection: <span id="detection-status" class="detection-status active">Active</span></p>
+            <p>Car Count: <span id="car-count">0</span></p>
         </div>
     </div>
 
@@ -96,6 +97,16 @@
         const toggleButton = document.getElementById('toggleDetection');
         
         let detecting = true;
+
+        function updateCarCount() {
+            fetch('/car_count')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('car-count').textContent = data.count;
+                });
+        }
+
+        setInterval(updateCarCount, 1000);  // Poll every second
 
         videoStream.onerror = function() {
             streamStatus.textContent = 'Error: Stream not available';

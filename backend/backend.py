@@ -1,5 +1,5 @@
 from flask import Flask, Response, render_template, jsonify, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import cv2
 import threading
 import time
@@ -9,7 +9,8 @@ from threading import Lock
 import logging
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://10.0.0.25:8000", "http://localhost:8000"]}})
+CORS(app)
+adminSource = 'http://127.0.0.1:5500'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -158,18 +159,24 @@ def trafficLevel():
     try:
         data = read_data()
         if request.method == 'GET':
-            return jsonify({'status': 'success', 'trafficLevel': data['level']})
+            @cross_origin(origins='*')
+            def getLevel():
+                return jsonify({'status': 'success', 'trafficLevel': data['level']})
+            return getLevel()
         elif request.method == 'POST':
-            req_data = request.get_json()
-            new_level = req_data["trafficLevel"]
-            if not isinstance(new_level, int) or new_level < 1 or new_level > 9:
-                return jsonify({'status': 'error', 'message': 'Traffic level must be an integer between 1 and 9'}), 422
-            data['level'] = new_level
-            data['historyData'].append({'time': time.strftime("%I:%M"), 'value': new_level})
-            if len(data['historyData']) > 12:
-                data['historyData'].pop(0)
-            write_data(data)
-            return jsonify({'status': 'success', 'trafficLevel': new_level})
+            @cross_origin(origins=[adminSource])
+            def postLevel():
+                req_data = request.get_json()
+                new_level = req_data["trafficLevel"]
+                if not isinstance(new_level, int) or new_level < 1 or new_level > 9:
+                    return jsonify({'status': 'error', 'message': 'Traffic level must be an integer between 1 and 9'}), 422
+                data['level'] = new_level
+                data['historyData'].append({'time': time.strftime("%I:%M"), 'value': new_level})
+                if len(data['historyData']) > 12:
+                    data['historyData'].pop(0)
+                write_data(data)
+                return jsonify({'status': 'success', 'trafficLevel': new_level})
+            return postLevel()
     except Exception as e:
         logger.error(f"Error in trafficLevel: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
@@ -179,16 +186,22 @@ def thresholds():
     try:
         data = read_data()
         if request.method == 'GET':
-            return jsonify({'status': 'success', 'thresholds': data['thresholdsLevels']})
+            @cross_origin(origins='*')
+            def getThreshold():
+                return jsonify({'status': 'success', 'thresholds': data['thresholdsLevels']})
+            return getThreshold()
         elif request.method == 'POST':
-            req_data = request.get_json()
-            new_thresholds = req_data["thresholds"]
-            if not isinstance(new_thresholds, list) or len(new_thresholds) != 2 or \
-               not all(isinstance(x, (int, float)) and x >= 0 for x in new_thresholds):
-                return jsonify({'status': 'error', 'message': 'Thresholds must be a list of two non-negative numbers'}), 422
-            data['thresholdsLevels'] = new_thresholds
-            write_data(data)
-            return jsonify({'status': 'success', 'thresholds': new_thresholds})
+            @cross_origin(origins=[adminSource])
+            def postThreshold():
+                req_data = request.get_json()
+                new_thresholds = req_data["thresholds"]
+                if not isinstance(new_thresholds, list) or len(new_thresholds) != 2 or \
+                not all(isinstance(x, (int, float)) and x >= 0 for x in new_thresholds):
+                    return jsonify({'status': 'error', 'message': 'Thresholds must be a list of two non-negative numbers'}), 422
+                data['thresholdsLevels'] = new_thresholds
+                write_data(data)
+                return jsonify({'status': 'success', 'thresholds': new_thresholds})
+            return postThreshold()
     except Exception as e:
         logger.error(f"Error in thresholds: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
@@ -198,19 +211,25 @@ def lotManager():
     try:
         data = read_data()
         if request.method == 'GET':
-            return jsonify({'status': 'success', 'lotData': data['lotData']})
+            @cross_origin(origins='*')
+            def getLotManager():
+                return jsonify({'status': 'success', 'lotData': data['lotData']})
+            return getLotManager()
         elif request.method == 'POST':
-            req_data = request.get_json()
-            new_lot_data = req_data["lotData"]
-            if not isinstance(new_lot_data, list) or not all(
-                isinstance(lot, dict) and 'name' in lot and 'spaces' in lot and 'isOpen' in lot and
-                isinstance(lot['name'], str) and isinstance(lot['spaces'], int) and isinstance(lot['isOpen'], bool)
-                for lot in new_lot_data
-            ):
-                return jsonify({'status': 'error', 'message': 'Invalid lot data format'}), 422
-            data['lotData'] = new_lot_data
-            write_data(data)
-            return jsonify({'status': 'success', 'lotData': new_lot_data})
+            @cross_origin(origins=[adminSource])
+            def postLotManager():
+                req_data = request.get_json()
+                new_lot_data = req_data["lotData"]
+                if not isinstance(new_lot_data, list) or not all(
+                    isinstance(lot, dict) and 'name' in lot and 'spaces' in lot and 'isOpen' in lot and
+                    isinstance(lot['name'], str) and isinstance(lot['spaces'], int) and isinstance(lot['isOpen'], bool)
+                    for lot in new_lot_data
+                ):
+                    return jsonify({'status': 'error', 'message': 'Invalid lot data format'}), 422
+                data['lotData'] = new_lot_data
+                write_data(data)
+                return jsonify({'status': 'success', 'lotData': new_lot_data})
+            return postLotManager()
     except Exception as e:
         logger.error(f"Error in lotManager: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
@@ -218,8 +237,11 @@ def lotManager():
 @app.route('/history', methods=['GET'])
 def history():
     try:
-        data = read_data()
-        return jsonify({'status': 'success', 'historyData': data['historyData']})
+        @cross_origin(origins='*')
+        def getHistory():
+            data = read_data()
+            return jsonify({'status': 'success', 'historyData': data['historyData']})
+        return getHistory()
     except Exception as e:
         logger.error(f"Error in history: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500

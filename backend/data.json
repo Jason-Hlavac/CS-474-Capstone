@@ -1,5 +1,5 @@
 {
-    "level": 8,
+    "level": 4,
     "thresholdsLevels": [
         5,
         10
@@ -14,37 +14,19 @@
             "isOpen": false,
             "name": "Garaventa Lot",
             "spaces": 40
+        },
+        {
+            "isOpen": true,
+            "name": "asd",
+            "spaces": 123
+        },
+        {
+            "name": "Test Lot",
+            "spaces": 4545,
+            "isOpen": true
         }
     ],
     "historyData": [
-        {
-            "time": "8:00",
-            "value": 28
-        },
-        {
-            "time": "9:00",
-            "value": 80
-        },
-        {
-            "time": "10:00",
-            "value": 99
-        },
-        {
-            "time": "11:00",
-            "value": 43
-        },
-        {
-            "time": "12:00",
-            "value": 20
-        },
-        {
-            "time": "1:00",
-            "value": 45
-        },
-        {
-            "time": "2:00",
-            "value": 28
-        },
         {
             "time": "3:00",
             "value": 80
@@ -64,6 +46,34 @@
         {
             "time": "11:32",
             "value": 8
+        },
+        {
+            "time": "01:34",
+            "value": 3
+        },
+        {
+            "time": "01:43",
+            "value": 5
+        },
+        {
+            "time": "01:43",
+            "value": 7
+        },
+        {
+            "time": "01:43",
+            "value": 8
+        },
+        {
+            "time": "01:44",
+            "value": 4
+        },
+        {
+            "time": "01:52",
+            "value": 8
+        },
+        {
+            "time": "02:15",
+            "value": 4
         }
     ]
 }

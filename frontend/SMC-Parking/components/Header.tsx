@@ -10,7 +10,7 @@ export function Header({ title, isReturnPage }: {title: string, isReturnPage : b
             </View>
             <View style = {styles.titleTextWrapper}>
                 <View style = {styles.left}>
-                {isReturnPage == true ? <TouchableOpacity onPress={() => navigation.navigate('index')} style = {styles.touchable}>
+                {isReturnPage == true ? <TouchableOpacity onPress={() => navigation.goBack()} style = {styles.touchable}>
                         <Image style = {styles.returnButton} source = {require('../assets/images/return-button.png')}></Image>
                     </TouchableOpacity> : null}
                 </View>

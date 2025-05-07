@@ -11,7 +11,7 @@ export function NotificationToggle({ isNotificationToggled, setIsNotificationTog
     return(<>
         <View style = {styles.container}>
             <Text style = {styles.notificationText}>Recieve Notifications</Text>
-            <Switch trackColor={{false:'#D8E5F0', true: '#D8E5F0'}} thumbColor={isNotificationToggled ? '#D82732' : '#D82732'} onValueChange = {toggleSwitch} value = {isNotificationToggled}></Switch>
+            <Switch trackColor={{false:'#D8E5F0', true: '#D8E5F0'}} thumbColor={isNotificationToggled ? '#1dad44' : '#D82732'} onValueChange = {toggleSwitch} value = {isNotificationToggled}></Switch>
         </View>
         <View style = {styles.hr} />
     </>)

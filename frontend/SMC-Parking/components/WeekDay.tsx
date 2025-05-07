@@ -34,7 +34,7 @@ export function Day(){
         ))
         }
       </View>
-        <hr style={styles.hr}/>
+        <View style={styles.hr}/>
         {/*  */}
         <View style ={weekStyles.container}>
             <TrafficGraph/>

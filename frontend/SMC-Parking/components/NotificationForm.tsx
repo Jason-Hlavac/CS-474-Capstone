@@ -29,6 +29,8 @@ export function NotificationForm({notificationData, setNotificationData}: {notif
 
     return(<>
         <View style = {styles.container}>
+
+            <View style={{ width: '40%', height: 50 }}>
                 <Picker selectedValue={selectedDay} onValueChange={(itemValue) => setSelectedDay(itemValue)}>
                     <Picker.Item label = 'Monday' value = 'mon'></Picker.Item>
                     <Picker.Item label = 'Tuesday' value = 'tues'></Picker.Item>
@@ -38,30 +40,36 @@ export function NotificationForm({notificationData, setNotificationData}: {notif
                     <Picker.Item label = 'Saturday' value = 'sat'></Picker.Item>
                     <Picker.Item label = 'Sunday' value = 'sun'></Picker.Item>
                 </Picker>
-            <View style = {styles.break}/>
-                <View style = {styles.halfScreen}>
-                    <Text style = {styles.formText}>Arrival Time</Text>
                 </View>
-                <View style = {styles.halfScreen}>
-                    <Button color={'#D82732'} onPress={() => setArrivalVisible(true)} title = {String(arrivalTime.hours%12 || 12).padStart(2, '0') + ":" + String(arrivalTime.minutes).padStart(2, '0') + " " + amOrPm}/>
+
+                <View style = {styles.break}>
+                    <View style = {styles.halfScreen}>
+                        <Text style = {styles.formText}>Arrival Time</Text>
+                    </View>
+                    <View style = {styles.halfScreen}>
+                        <Button color={'#D82732'} onPress={() => setArrivalVisible(true)} title = {String(arrivalTime.hours%12 || 12).padStart(2, '0') + ":" + String(arrivalTime.minutes).padStart(2, '0') + " " + amOrPm}/>
+                    
+                    
+                        <TimePickerModal
+                            visible={arrivalVisible}
+                            hours={arrivalTime?.hours || 0}
+                            minutes={arrivalTime?.minutes || 0}
+                            onDismiss={() => setArrivalVisible(false)}
+                            onConfirm={({ hours, minutes }) => {
+                                setArrivalTime({ hours, minutes })
+                                setArrivalVisible(false)
+                            }}
+                        label="Select time"/>
+                        </View>
                 </View>
-                    <TimePickerModal
-                        visible={arrivalVisible}
-                        hours={arrivalTime?.hours || 0}
-                        minutes={arrivalTime?.minutes || 0}
-                        onDismiss={() => setArrivalVisible(false)}
-                        onConfirm={({ hours, minutes }) => {
-                            setArrivalTime({ hours, minutes })
-                            setArrivalVisible(false)
-                        }}
-                    label="Select time"/>
-                <View style = {styles.break}/>
+                <View style = {styles.break}>
                     <View style = {styles.halfScreen}>
                         <Text style = {styles.formText}>Travel Time</Text>
                     </View>
                     <View style = {styles.halfScreen}>
                         <Button color={'#D82732'} onPress={() => setTravelVisible(true)} title = {String(travelTime.hours).padStart(1, '0') + " hours " + String(travelTime.minutes).padStart(1, '0') + " mins"}/>
-                    </View>
+                    
+
                         <TimePickerModal
                         visible={travelVisible}
                         hours={travelTime?.hours || 0}
@@ -72,7 +80,8 @@ export function NotificationForm({notificationData, setNotificationData}: {notif
                             setTravelVisible(false)
                         }}
                         label="Select duration"/>
-                <View style = {styles.break}/>
+                </View>
+                </View>
             <Button title = "Add Time" color={'#D82732'} onPress = {processForm} />
         </View>
         <View style = {styles.hr}/>
@@ -82,11 +91,11 @@ export function NotificationForm({notificationData, setNotificationData}: {notif
 const styles = StyleSheet.create({
     container: {
         height: '40%',
+        width: '100%',
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
-        flexWrap: 'wrap',
     },
 
     hr: {
@@ -99,8 +108,10 @@ const styles = StyleSheet.create({
     },
 
     break:{
-        flexBasis: '100%',
-        height: 0,
+        width: '100%',
+        display: 'flex',
+        flexWrap: 'nowrap',
+        alignItems: 'center'
     },
 
     formText: {

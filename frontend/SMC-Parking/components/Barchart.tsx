@@ -52,7 +52,7 @@ export function TrafficGraph() {
     <BarChart
       data={chartData}
       width={Dimensions.get('window').width*1.5}
-      height={220}
+      height={300}
       yAxisLabel=""
       yAxisSuffix=""
       withHorizontalLabels={false}

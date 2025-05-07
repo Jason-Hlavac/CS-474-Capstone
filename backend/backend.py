@@ -1,5 +1,8 @@
 from flask import Flask, Response, render_template, jsonify, request
 from flask_cors import CORS, cross_origin
+from flask import Flask, Response, render_template
+from ultralytics import YOLO
+from deep_sort_realtime.deepsort_tracker import DeepSort
 import cv2
 import threading
 import time
@@ -94,7 +97,11 @@ def generate_frames():
     while stream_active:
         with lock:
             if output_frame is None:
+                print("output_frame is None")  # TEMP debug
                 continue
+
+            print("Sending frame...")
+            # Encode the frame as JPEG
             (flag, encoded_image) = cv2.imencode(".jpg", output_frame)
             if not flag:
                 continue
@@ -102,41 +109,88 @@ def generate_frames():
               bytearray(encoded_image) + b'\r\n')
         time.sleep(0.05)
 
+car_count = 0
+counted_ids = set()
+
+def point_near_line(px, py, x1, y1, x2, y2, threshold=10):
+    A = y2 - y1
+    B = x1 - x2
+    C = x2 * y1 - x1 * y2
+    distance = abs(A * px + B * py + C) / ((A**2 + B**2) ** 0.5)
+    return distance < threshold
+
 def stream_video():
-    global output_frame, lock, rtsp_url, stream_active, detect_faces
-    logger.info(f"Attempting to connect to: {rtsp_url}")
-    video_stream = cv2.VideoCapture(rtsp_url)
-    time.sleep(2.0)
-    if not video_stream.isOpened():
-        logger.error("Could not open video stream")
+    global output_frame, lock, stream_active, car_count, counted_ids
+
+    model = YOLO('yolov8n.pt')
+    tracker = DeepSort(max_age=30)
+
+    # Load video file
+    video_path = os.path.abspath("static/smctest.mp4")
+    print(f"Opening video: {video_path}")
+    cap = cv2.VideoCapture(video_path)
+
+    line_start = (380, 352)
+    line_end = (215, 0)
+
+    if not cap.isOpened():
+        print("Error: Could not open video file.")
         return
-    logger.info("Camera connection established")
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    frame_count = 0
+
+    print("Video file opened successfully.")
+
+    # Load car cascade (download and place if needed)
+    cascade_path = "static/haarcascade_car.xml"
+    car_cascade = cv2.CascadeClassifier(cascade_path)
+    if car_cascade.empty():
+        print("Error: Failed to load car cascade.")
+        return
+
     while stream_active:
-        success, frame = video_stream.read()
+        success, frame = cap.read()
         if not success:
-            logger.warning("Failed to read frame. Attempting to reconnect")
-            video_stream.release()
-            video_stream = cv2.VideoCapture(rtsp_url)
-            time.sleep(2.0)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             continue
-        frame = cv2.resize(frame, (640, 480))
-        if detect_faces and frame_count % 5 == 0:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(
-                gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30)
-            )
-            for (x, y, w, h) in faces:
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                cv2.putText(frame, 'Face', (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-        frame_count += 1
-        timestamp = time.strftime("%A %d %B %Y %I:%M:%S %p")
-        cv2.putText(frame, timestamp, (10, frame.shape[0] - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
+
+        results = model(frame)[0]
+        detections = []
+
+        for result in results.boxes.data.tolist():
+            x1, y1, x2, y2, score, cls_id = result
+            if int(cls_id) == 2:  # car
+                detections.append(([x1, y1, x2 - x1, y2 - y1], score, 'car'))
+
+        tracks = tracker.update_tracks(detections, frame=frame)
+
+        for track in tracks:
+            if not track.is_confirmed():
+                continue
+
+            track_id = track.track_id
+            ltrb = track.to_ltrb()
+            x1, y1, x2, y2 = map(int, ltrb)
+            cx = int((x1 + x2) / 2)
+            cy = int((y1 + y2) / 2)
+
+            if point_near_line(cx, cy, *line_start, *line_end, threshold=15) and track_id not in counted_ids:
+                car_count += 1
+                counted_ids.add(track_id)
+
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+            cv2.putText(frame, f'ID {track_id}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.circle(frame, (cx, cy), 4, (0, 255, 0), -1)
+
+        cv2.line(frame, line_start, line_end, (0, 255, 255), 2)
+        cv2.putText(frame, f'Car Count: {car_count}', (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
         with lock:
             output_frame = frame.copy()
-    video_stream.release()
+
+        time.sleep(0.03)
+
+    cap.release()
+
 
 # API Endpoints
 @app.route('/')
@@ -253,6 +307,11 @@ def handle_shutdown(signum, frame):
     stream_active = False
     stream_thread.join()
     exit(0)
+
+@app.route('/car_count')
+def car_count_api():
+    global car_count
+    return {"count": car_count}
 
 if __name__ == '__main__':
     import signal

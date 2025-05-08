@@ -1,37 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title> Parking Login Portal </title>
-        <link rel="stylesheet" href = "style.css">
-        <link rel="icon" href="favicon.ico">
-        <link href='https://fonts.googleapis.com/css?family=Bree Serif' rel='stylesheet'>
-    </head>
-    <body>
-        <div class = "login-screen">
-            <div class = "logo-div">
-                <img class = "logo" src="smc-logo-color.png">
+<head>
+    <title>Parking Login Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+    <link href='https://fonts.googleapis.com/css?family=Bree Serif' rel='stylesheet'>
+    
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            window.location.href = "dashboard.html"; // redirect after login
+        }
+    </script>
+</head>
+<body>
+    <div class="login-screen">
+        <div class="logo-div">
+            <img class="logo" src="smc-logo-color.png" alt="SMC Logo">
+        </div>
+
+        <div class="login-title">
+            Parking Access Portal
+        </div>
+
+        <div class="login-form">
+            <!-- Google Login Button -->
+            <div id="g_id_onload"
+                data-client_id="266996419577-drbdmb54idu082csj0pv4u8ekt43a9sb.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
             </div>
 
-            <div class = "login-title">
-                Parking Access Portal
-            </div>
-            <div class = "login-form">
-                <form id = "login">
-                <table class = "login-table">
-                    <tr class = "table-row">
-                        <br>
-                        <td class = "table-text">Username</td>
-                        <td class = "table-text-entry"><input class = "text-entry" type = "username" id = "username" autocomplete = "username"></td>
-                    </tr>
-                    <tr class = "table-row">
-                        <td class = "table-text">Password</td>
-                        <td class = "table-text-entry"><input class = "text-entry" type = "password" id = "password" autocomplete = "password"></td>
-                    </tr>
-                </table>
-                <br>
-                <button class = "submit-button" form = "login" value = "Submit" ><a href = "dashboard.html">Login ></a></button>
-            </form>
+        <div class="google-button-wrapper">
+            <div class="g_id_signin"
+                data-type="standard"
+                data-size="large"
+                data-theme="outline"
+                data-text="sign_in_with"
+                data-shape="rectangular"
+                data-logo_alignment="left">
             </div>
         </div>
-    </body>
+    </div>
+    </div>
+</body>
 </html>

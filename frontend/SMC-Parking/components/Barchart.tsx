@@ -15,7 +15,7 @@ export function TrafficGraph({ weekDay }: { weekDay: string }) {
     async function fetchSpreadSheet() {
       try {
         setIsLoading(true);
-        const response = await fetch('http://' + ip + '/history');
+        const response = await fetch(ip + '/history');
         const data = await response.json();
         setSpreadSheetData(data.historyData);
       } catch (e) {

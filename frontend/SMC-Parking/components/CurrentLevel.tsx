@@ -13,7 +13,7 @@ export function CurrentLevel(){
         async function fetchTrafficLevel(){
             try{
                 setIsLoading(true);
-                const response = await fetch('http://'+ ip + '/trafficLevel');
+                const response = await fetch(ip + '/trafficLevel');
                 const data = await response.json();
                 setCurrLevel(data.trafficLevel);
             }catch (e){
@@ -38,7 +38,7 @@ export function CurrentLevel(){
     }else if(noData){
         return(
             <View style = {styles.container}>
-                <ComponentText displayText = { 'Current Traffic Level' }/>
+                <ComponentText displayText = { 'Current Level' }/>
                 <View style = {styles.levelContainerCenter}>
                     <Text style = {styles.noDataText}>Could Not Retrieve Data</Text>
                 </View>

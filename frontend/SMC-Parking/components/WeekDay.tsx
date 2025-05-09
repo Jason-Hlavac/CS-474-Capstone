@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Header, styles } from '@/components/Header';
 import { ComponentText } from './ComponentText';
-import { TrafficGraph } from './Barchart';
+//import { TrafficGraph } from './Barchart';
 
 export function Day() {
   // Gets us the current day of week
@@ -36,7 +36,7 @@ export function Day() {
       </View>
       <View style={styles.hr} />
       <View style={weekStyles.container}>
-        <TrafficGraph weekDay={week[currentDay]} />
+        
       </View>
     </>
   );

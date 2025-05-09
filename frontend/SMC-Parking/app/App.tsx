@@ -11,11 +11,20 @@ const ip = Constants.expoConfig?.extra?.serverIp;
 const BACKGROUND_FETCH_TASK = 'background-fetch-task';
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+  
+  try{
+    await Notifications.presentNotificationAsync({
+    title: 'Traffic Alert',
+    body: 'Traffic is building up!',
+    });
+  } catch (e){
+    console.error(e)
+  }
   try {
     var shouldNotify = false;
     var data
     try{
-      const response = await fetch('http://'+ ip + '/trafficLevel');
+      const response = await fetch(ip + '/trafficLevel');
       data = await response.json();
       data = data.trafficLevel;
     }catch (e){

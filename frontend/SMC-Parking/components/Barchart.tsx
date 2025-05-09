@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart } from 'react-native-chart-kit';
 import { ScrollView, Image, View, StyleSheet, Dimensions, Text } from 'react-native';
-import data from '../data/server-data.json';
-const ip = data.serverIP;
+import Constants from 'expo-constants';
+
+const ip = Constants.expoConfig?.extra?.serverIp;
 
 export function TrafficGraph({ weekDay }: { weekDay: string }) {
   // Spreadsheet-style data (could be imported from a file)

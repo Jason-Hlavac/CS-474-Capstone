@@ -2,8 +2,8 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import { ComponentText } from './ComponentText';
 import { CurrentLevelBars } from './CurrentLevelBars';
 import React, { useState, useEffect } from 'react';
-import data from '../data/server-data.json';
-const ip = data.serverIP;
+import Constants from 'expo-constants';
+const ip = Constants.expoConfig?.extra?.serverIp;
 
 export function CurrentLevel(){
     const [currLevel, setCurrLevel] = useState(5);

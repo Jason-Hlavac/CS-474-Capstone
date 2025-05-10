@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     marginBottom: 5, 
   },
   barLabel: {
-    fontSize: 10,
+    fontSize: 15,
     color: '#000000',
     marginTop: 5,
     textAlign: 'center', 

@@ -98,7 +98,7 @@ export default function App() {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
     if (!isRegistered) {
       await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 120, // 2 minutes
+        minimumInterval: 15, // 2 minutes
         stopOnTerminate: false,
         startOnBoot: true,
       });

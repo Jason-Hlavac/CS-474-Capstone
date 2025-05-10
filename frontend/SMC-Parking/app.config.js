@@ -22,6 +22,10 @@ export default {
     android: {
       package: 'com.smc.parkingapp',
       permissions: ["RECEIVE_BOOT_COMPLETED", "WAKE_LOCK"],
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/adaptive-icon.png",
+        backgroundColor: "#143257"
+      }
     },
         ios: {
       bundleIdentifier: "com.smc.parkingapp",

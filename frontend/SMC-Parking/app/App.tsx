@@ -16,17 +16,6 @@ const ip = Constants.expoConfig?.extra?.serverIp;
 const BACKGROUND_FETCH_TASK = 'background-fetch-task';
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-  console.log("----------------BACKGROUND TASK EXECUTED--------------");
-
-  try {
-    await Notifications.presentNotificationAsync({
-      title: 'Traffic Alert',
-      body: 'Traffic is building up!',
-    });
-  } catch (e) {
-    console.error(e);
-  }
-
   try {
     let shouldNotify = false;
     let data;
@@ -49,7 +38,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
       const { isNotificationToggled, notificationData } = JSON.parse(notificationDataRaw);
 
       if (isNotificationToggled) {
-        const today = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
+        const today = currentDate.toLocaleDateString('en-US', { weekday: 'long' }).slice(0, 3).toLowerCase();
 
         for (const entry of notificationData) {
           if (entry.day === today) {
@@ -76,7 +65,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
 
     if (shouldNotify) {
         await Notifications.presentNotificationAsync({
-        title: 'TEST NOTIFICATION',
+        title: 'Traffic Alert:',
         body: 'Current detected traffic level: ' + getText(data),
       });
     }
@@ -94,7 +83,6 @@ export default function App() {
   useEffect(() => {
     requestPermissions();
     registerBackgroundTask();
-    triggerTestNotification();
     
   }, []);
 
@@ -110,26 +98,12 @@ export default function App() {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
     if (!isRegistered) {
       await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 60, // 1 minute
+        minimumInterval: 120, // 2 minutes
         stopOnTerminate: false,
         startOnBoot: true,
       });
     }
   };
-
-const triggerTestNotification = async () => {
-    try {
-      // Display a notification immediately
-      await Notifications.presentNotificationAsync({
-        title: 'TEST NOTIFICATION',
-        body: 'This notification runs on app start',
-      });
-      console.log("TEST NOTIFICATION SENT");
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
 
 
   const { width, height } = useWindowDimensions();

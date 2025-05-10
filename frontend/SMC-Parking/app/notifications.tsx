@@ -59,7 +59,7 @@ export default function Index() {
     return(
     <View
       style={{
-        width, height, backgroundColor: 'white', overflowX: 'hidden',
+        width, height, backgroundColor: 'white'
       }}
     >
       <Header title = {'Notification Settings'} isReturnPage = {true} />

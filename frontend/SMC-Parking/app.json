@@ -1,16 +1,11 @@
 {
   "expo": {
-    "name": "My App",
-    "slug": "my-app",
+    "name": "SMC-Parking",
+    "slug": "SMC-Parking",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
+    "main": "index.tsx",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "updates": {
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
@@ -26,7 +21,12 @@
     },
     "ios": {
       "bundleIdentifier": "com.smc.parkingapp",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     }
   }
 }

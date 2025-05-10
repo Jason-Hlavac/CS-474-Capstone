@@ -18,7 +18,7 @@ export function Header({ title, isReturnPage }: {title: string, isReturnPage : b
                     <Text style = {styles.titleText}>{title}</Text>
                 </View>
                 <View style = {styles.right}>
-                    {isReturnPage == false ? <TouchableOpacity onPress={() => navigation.navigate('notifications')} style = {styles.touchable}>
+                    {isReturnPage == false ? <TouchableOpacity onPress={() => navigation.navigate("NotificationSettings")} style = {styles.touchable}>
                         <Image style = {styles.settingsButton} source = {require('../assets/images/settings-button.png')}></Image>
                     </TouchableOpacity> : null}
                 </View>

@@ -1,39 +1,16 @@
 from flask import Flask
-from flask_cors import CORS
-from app.routes import routes
-from app.video import stream_video
-from app.data_store import init_data_file
-import threading
-import signal
-import os
-import logging
-
-# app = Flask(__name__)
-# CORS(app)
-# adminSource = 'http://127.0.0.1:5500'
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+from app.routes import video_bp  # import the blueprint
+from app import video  # import to access video.start_stream at startup
 
 app = Flask(__name__)
-app.register_blueprint(routes)
-os.makedirs('templates', exist_ok=True)
+app.register_blueprint(video_bp)  # register the video streaming blueprint
 
-stream_thread = threading.Thread(target=stream_video)
-stream_thread.daemon = True
-stream_thread.start()
+# Optionally, configure other settings, logging, etc. here.
 
-def handle_shutdown(signum, frame):
-    from app.video import stream_active, stream_thread
-    stream_active = False
-    stream_thread.join()
-    exit(0)
+# Start the video streaming thread automatically at startup:
+video.start_stream()  # this will set the flag and spawn the background thread
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, handle_shutdown)
-    logging.basicConfig(level=logging.INFO)
-    init_data_file()
-
-    stream_thread.start()
-
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True, use_reloader=False)
+    # Run the Flask development server.
+    # Important: disable the reloader to avoid launching the thread twice in debug mode.
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True, use_reloader=False)

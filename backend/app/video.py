@@ -23,68 +23,102 @@ def point_near_line(px, py, x1, y1, x2, y2, threshold=10):
     return distance < threshold
 
 def _video_loop():
-    """Background thread function to process video frames with YOLOv8 + DeepSORT."""
     global output_frame, car_count, counted_ids
-    # Load models once at thread start
-    model = YOLO('yolov8n.pt')   # YOLOv8 model (e.g., small model)
-    tracker = DeepSort(max_age=30) 
+    model = YOLO('yolov8s.pt')
+    tracker = DeepSort(
+        max_age=30,
+        n_init=3,
+        max_cosine_distance=0.3)  # Try lowering to 0.2 or 0.25
+
     cap = cv2.VideoCapture("static/smctest.mp4")
+
     if not cap.isOpened():
         logging.error("Failed to open video source.")
         stream_event.clear()
         return
 
     logging.info("Video capture started.")
-    line_start, line_end = (380, 352), (215, 0)  # line for counting
-    car_count = 0
-    counted_ids = set()
 
-    while stream_event.is_set():  # loop while streaming flag is True:contentReference[oaicite:3]{index=3}
+    entry_line = ((380, 352), (215, 0))  # green
+    exit_line  = ((480, 352), (315, 0))  # red
+
+    car_count = 0
+    line_history = {}  # {track_id: 'entry' or 'exit'}
+    last_log_time = time.time()
+
+    while stream_event.is_set():
         ret, frame = cap.read()
         if not ret:
-            # Loop the video file if at end
             cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             continue
 
-        # Run YOLO detection
-        results = model(frame)[0]
+        # Inference timing
+        start_infer = time.time()
+        results = model(frame, verbose=False)[0]
+        inference_time = (time.time() - start_infer) * 1000  # ms
+
+        # Extract car detections
         detections = []
         for *bbox, score, cls_id in results.boxes.data.tolist():
             x1, y1, x2, y2 = map(int, bbox)
-            if int(cls_id) == 2:  # class 2 = 'car' in COCO
+            if int(cls_id) == 2 and score > 0.4:  # car class + confidence threshold
                 detections.append(([x1, y1, x2 - x1, y2 - y1], score, 'car'))
-        # Update DeepSORT tracker
+
+        # DeepSORT tracking
         tracks = tracker.update_tracks(detections, frame=frame)
         for track in tracks:
             if not track.is_confirmed():
                 continue
+
             track_id = track.track_id
             x1, y1, x2, y2 = map(int, track.to_ltrb())
-            cx, cy = int((x1+x2)/2), int((y1+y2)/2)
-            # Count car if it crosses the line (and not counted before)
-            if point_near_line(cx, cy, *line_start, *line_end, threshold=15) and track_id not in counted_ids:
+            cx, cy = int((x1 + x2) / 2), int((y1 + y2) / 2)
+
+            if track_id not in line_history:
+                line_history[track_id] = None
+
+            near_entry = point_near_line(cx, cy, *entry_line[0], *entry_line[1], threshold=15)
+            near_exit = point_near_line(cx, cy, *exit_line[0], *exit_line[1], threshold=15)
+
+            # Count logic
+            if near_entry and line_history[track_id] == 'exit':
                 car_count += 1
-                counted_ids.add(track_id)
-            # Draw bounding box, ID, and center point on frame
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (255,0,0), 2)
-            cv2.putText(frame, f'ID {track_id}', (x1, y1-10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
-            cv2.circle(frame, (cx, cy), 4, (0,255,0), -1)
-        # Draw counting line and count text
-        cv2.line(frame, line_start, line_end, (0, 255, 255), 2)
+                line_history[track_id] = 'entry'
+            elif near_exit and line_history[track_id] == 'entry':
+                car_count -= 1
+                line_history[track_id] = 'exit'
+            elif near_entry:
+                line_history[track_id] = 'entry'
+            elif near_exit:
+                line_history[track_id] = 'exit'
+
+            # Draw box + ID
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+            cv2.putText(frame, f'ID {track_id}', (x1, y1 - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.circle(frame, (cx, cy), 4, (0, 255, 0), -1)
+
+        # Draw lines
+        cv2.line(frame, *entry_line, (0, 255, 0), 2)
+        cv2.line(frame, *exit_line, (0, 0, 255), 2)
         cv2.putText(frame, f'Car Count: {car_count}', (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-        # Update the global output_frame with the new processed frame (thread-safe)
-        with lock:
-            output_frame = frame.copy()  # copy to avoid issues if frame is reused:contentReference[oaicite:4]{index=4}
+        # Log once per second
+        now = time.time()
+        if now - last_log_time >= 1.0:
+            print(f"Car Count: {car_count} | Inference: {round(inference_time, 2)}ms")
+            last_log_time = now
 
-        # Small delay to throttle frame rate
+        # Update frame
+        with lock:
+            output_frame = frame.copy()
+
         time.sleep(0.03)
 
-    # Cleanup when stream_event is cleared (thread exiting)
     cap.release()
     logging.info("Video capture stopped.")
+
 
 def start_stream():
     """Start the video streaming thread if not already running."""

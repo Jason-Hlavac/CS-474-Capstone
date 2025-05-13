@@ -46,7 +46,7 @@ def _video_loop():
         n_init=3,
         max_cosine_distance=0.3)  # Try lowering to 0.2 or 0.25
 
-    cap = cv2.VideoCapture("static/smctest.mp4")
+    cap = cv2.VideoCapture("static/jt_test1.mp4")
 
     if not cap.isOpened():
         logging.error("Failed to open video source.")

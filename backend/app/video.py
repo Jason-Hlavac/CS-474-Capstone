@@ -17,7 +17,7 @@ counted_ids = set()
 config = {
     "model": "yolov8n.pt",
     "entry_line": (380, 352, 215, 0),
-    "exit_line": (280, 352, 115, 0),
+    "exit_line": (480, 352, 315, 0),
 }
 
 def set_config(new_config):

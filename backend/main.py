@@ -2,7 +2,7 @@ from flask import Flask
 from app.routes import video_bp  # import the blueprint
 from app import video  # import to access video.start_stream at startup
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='app/templates')
 app.register_blueprint(video_bp)  # register the video streaming blueprint
 
 # Optionally, configure other settings, logging, etc. here.

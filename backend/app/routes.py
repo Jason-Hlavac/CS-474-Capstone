@@ -1,5 +1,7 @@
-from flask import Blueprint, Response, jsonify
-from app.video import generate_frames, start_stream, stop_stream, car_count
+from flask import Blueprint, Response, jsonify, render_template, request
+from app.video import generate_frames, start_stream, stop_stream, car_count, set_config
+import requests, json
+
 
 # Create a Blueprint for video streaming-related routes
 video_bp = Blueprint('video', __name__)
@@ -31,3 +33,18 @@ def stop_stream_endpoint():
 def get_car_count():
     """Optional: get the current car count."""
     return jsonify({"count": car_count})
+
+@video_bp.route('/config')
+def config_page():
+    return render_template('testing.html')
+
+@video_bp.route('/update_config', methods=['POST'])
+def update_config():
+    data = request.get_json(force=True)  # force=True helps if header is missed
+    print("Received config:", data)
+    if not isinstance(data, dict):
+        return {"error": "Invalid config format"}, 400
+
+    from app import video
+    video.set_config(data)
+    return {"status": "ok"}

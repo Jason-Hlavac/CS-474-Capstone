@@ -14,6 +14,20 @@ stream_event = threading.Event()  # event flag to signal streaming thread (set =
 car_count = 0
 counted_ids = set()
 
+config = {
+    "model": "yolov8n.pt",
+    "entry_line": (380, 352, 215, 0),
+    "exit_line": (280, 352, 115, 0),
+}
+
+def set_config(new_config):
+    global config
+    if not isinstance(new_config, dict):
+        print("set_config error: input is not a dict")
+        return
+    config.update(new_config)
+    print("Updated config:", config)
+
 def point_near_line(px, py, x1, y1, x2, y2, threshold=10):
     """Utility: check if point (px,py) is within `threshold` pixels of line segment (x1,y1)-(x2,y2)."""
     A = y2 - y1
@@ -24,7 +38,9 @@ def point_near_line(px, py, x1, y1, x2, y2, threshold=10):
 
 def _video_loop():
     global output_frame, car_count, counted_ids
-    model = YOLO('yolov8s.pt')
+    current_model_name = config["model"]
+    model = YOLO(current_model_name)
+
     tracker = DeepSort(
         max_age=30,
         n_init=3,
@@ -39,8 +55,7 @@ def _video_loop():
 
     logging.info("Video capture started.")
 
-    entry_line = ((380, 352), (215, 0))  # green
-    exit_line  = ((480, 352), (315, 0))  # red
+    
 
     car_count = 0
     line_history = {}  # {track_id: 'entry' or 'exit'}
@@ -56,6 +71,18 @@ def _video_loop():
         start_infer = time.time()
         results = model(frame, verbose=False)[0]
         inference_time = (time.time() - start_infer) * 1000  # ms
+
+        # Update lines from config each frame
+        entry_line = ((config['entry_line'][0], config['entry_line'][1]),
+                    (config['entry_line'][2], config['entry_line'][3]))
+        exit_line = ((config['exit_line'][0], config['exit_line'][1]),
+                    (config['exit_line'][2], config['exit_line'][3]))
+        
+        # Optionally reload model if changed
+        if config["model"] != current_model_name:
+            model = YOLO(config["model"])
+            current_model_name = config["model"]
+            print(f"Switched to model: {current_model_name}")
 
         # Extract car detections
         detections = []

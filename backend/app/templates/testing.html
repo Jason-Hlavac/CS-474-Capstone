@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Detection Config</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    label { display: block; margin-top: 10px; }
+    .video-container { margin-top: 20px; }
+    input[type=number], select { width: 80px; }
+    #video-stream { border: 3px solid #444; max-width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>Adjust Car Detection Settings</h1>
+
+  <form id="config-form">
+    <fieldset>
+      <legend><strong>Model</strong></legend>
+      <label>
+        YOLO Model:
+        <select id="model-select">
+          <option value="yolov8n.pt">yolov8n</option>
+          <option value="yolov8s.pt">yolov8s</option>
+          <option value="yolov8m.pt">yolov8m</option>
+          <option value="yolov8l.pt">yolov8l</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend><strong>Counting Line Coordinates</strong></legend>
+      <label>Entry Line Start: X <input type="number" id="entryX1" value="100"> Y <input type="number" id="entryY1" value="250"></label>
+      <label>Entry Line End:   X <input type="number" id="entryX2" value="500"> Y <input type="number" id="entryY2" value="250"></label>
+      <label>Exit Line Start:  X <input type="number" id="exitX1" value="100"> Y <input type="number" id="exitY1" value="350"></label>
+      <label>Exit Line End:    X <input type="number" id="exitX2" value="500"> Y <input type="number" id="exitY2" value="350"></label>
+    </fieldset>
+
+    <button type="submit">Apply Changes</button>
+  </form>
+
+  <div class="video-container">
+    <h2>Live Video Stream</h2>
+    <img id="video-stream" src="/video_feed" alt="Video stream not available" />
+  </div>
+
+  <script>
+    document.getElementById('config-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const config = {
+        model: document.getElementById('model-select').value,
+        entry_line: [
+          parseInt(document.getElementById('entryX1').value),
+          parseInt(document.getElementById('entryY1').value),
+          parseInt(document.getElementById('entryX2').value),
+          parseInt(document.getElementById('entryY2').value),
+        ],
+        exit_line: [
+          parseInt(document.getElementById('exitX1').value),
+          parseInt(document.getElementById('exitY1').value),
+          parseInt(document.getElementById('exitX2').value),
+          parseInt(document.getElementById('exitY2').value),
+        ]
+      };
+
+      fetch('/update_config', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(config)
+      }).then(res => res.json())
+        .then(data => alert('Config updated!'))
+        .catch(err => alert('Error updating config.'));
+    });
+  </script>
+</body>
+</html>

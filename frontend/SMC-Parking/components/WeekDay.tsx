@@ -12,7 +12,7 @@ export function Day() {
 
   return (
     <>
-      <ComponentText displayText={'Current Traffic Level'} />
+      <ComponentText displayText={'Traffic History'} />
       <View style={weekStyles.weekContainer}>
         {week.map((day, index) => (
           <TouchableOpacity

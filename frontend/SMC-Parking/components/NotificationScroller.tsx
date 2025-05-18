@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, View, ScrollView, Image, TouchableOpacity, Text} from 'react-native';
 
 type NotificationType = {
     day: string;
@@ -22,25 +22,25 @@ export function NotificationScroller({notificationData, setNotificationData}: {n
     for(let i = 0; i < notificationData.length; i++){
         const isPM = notificationData[i].arrivalTime.hours >= 12;
         const amOrPm = isPM ? 'PM' : 'AM';
-        rows.push(<>
-            <View style = {styles.row}>
-                <View style = {[styles.dayCol, styles.col]}>{notificationData[i]['day']}</View>
-                <View style = {[styles.arriveCol, styles.col]}>{String(notificationData[i].arrivalTime.hours%12 || 12).padStart(2, '0') + ":" + String(notificationData[i].arrivalTime.minutes).padStart(2, '0') + " " + amOrPm}</View>
-                <View style = {[styles.travelCol, styles.col]}>{notificationData[i]['travelTime'].hours + ':' +notificationData[i]['travelTime'].minutes}</View>
+        rows.push(
+            <View style = {styles.row} key = {i}>
+                <View style = {[styles.dayCol, styles.col]}><Text style = {{textTransform: 'capitalize'}}>{notificationData[i]['day']}</Text></View>
+                <View style = {[styles.arriveCol, styles.col]}><Text>{String(notificationData[i].arrivalTime.hours%12 || 12).padStart(2, '0') + ":" + String(notificationData[i].arrivalTime.minutes).padStart(2, '0') + " " + amOrPm}</Text></View>
+                <View style = {[styles.travelCol, styles.col]}><Text>{notificationData[i]['travelTime'].hours + ':' +notificationData[i]['travelTime'].minutes}</Text></View>
                 <View style = {[styles.removeCol, styles.col]}><TouchableOpacity style = {styles.touchable} onPress = {() => removeNotification(i)}><Image style = {styles.image} source= {require('@/assets/images/closed.png')}/></TouchableOpacity></View>
                 <View style = {styles.paddingCol}></View>
             </View>
-            </>)
+            )
 
     }
 
     return(<>
         <View style = {styles.container}>
             <View style = {styles.header}>
-                <View style = {[styles.dayCol, styles.col]}>Day</View>
-                <View style = {[styles.arriveCol, styles.col]}>Time Arriving</View>
-                <View style = {[styles.travelCol, styles.col]}>Travel Time</View>
-                <View style = {[styles.removeCol, styles.col]}>Remove</View>
+                <View style = {[styles.dayCol, styles.col]}><Text>Day</Text></View>
+                <View style = {[styles.arriveCol, styles.col]}><Text>Time Arriving</Text></View>
+                <View style = {[styles.travelCol, styles.col]}><Text>Travel Time</Text></View>
+                <View style = {[styles.removeCol, styles.col]}><Text>Remove</Text></View>
                 <View style = {[styles.paddingCol, styles.col]}></View>
             </View>
 
@@ -55,7 +55,7 @@ export function NotificationScroller({notificationData, setNotificationData}: {n
 
 const styles = StyleSheet.create({
     container: {
-        height: '31%',
+        height: '45%',
         marginTop: '2%',
         display: 'flex',
         flexDirection: 'column',
@@ -74,13 +74,14 @@ const styles = StyleSheet.create({
 
     row:{
         width: '100%',
-        height: '20%',
+        height: 40,
         display: 'flex',
         flexDirection: 'row',
     },
 
     scrollable:{
         width: '100%',
+        height: 300,
         backgroundColor: '#D8E5F0',
         display: 'flex',
         flexDirection: 'column',
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     },
 
     dayCol: {
-        width: '18%',
+        width: '20%',
     },
 
     arriveCol: {

@@ -2,8 +2,8 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import { ComponentText } from './ComponentText';
 import { CurrentLevelBars } from './CurrentLevelBars';
 import React, { useState, useEffect } from 'react';
-
-const ip = '127.0.0.1:5000'
+import Constants from 'expo-constants';
+const ip = Constants.expoConfig?.extra?.serverIp;
 
 export function CurrentLevel(){
     const [currLevel, setCurrLevel] = useState(5);
@@ -13,10 +13,9 @@ export function CurrentLevel(){
         async function fetchTrafficLevel(){
             try{
                 setIsLoading(true);
-                const response = await fetch('http://'+ ip + '/trafficLevel');
+                const response = await fetch(ip + '/trafficLevel');
                 const data = await response.json();
                 setCurrLevel(data.trafficLevel);
-                console.log(data);
             }catch (e){
                 setNoData(true);
                 console.log(e)
@@ -39,7 +38,7 @@ export function CurrentLevel(){
     }else if(noData){
         return(
             <View style = {styles.container}>
-                <ComponentText displayText = { 'Current Traffic Level' }/>
+                <ComponentText displayText = { 'Current Level' }/>
                 <View style = {styles.levelContainerCenter}>
                     <Text style = {styles.noDataText}>Could Not Retrieve Data</Text>
                 </View>

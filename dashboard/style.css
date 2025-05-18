@@ -38,15 +38,13 @@ html body{
     font-size: 200%;
 }
 
-.login-form{
-    width: 70vw;
-    max-width: 800px;
-    min-height: 25vw;
-    margin-top: 5%;
-    border-style: double;
-    border-color: var(--smc-dark-gray);
+.login-form {
+    width: fit-content;
+    padding: 2rem;
+    margin: 3rem auto;
+    border: none;
     text-align: center;
-    align-self: center;
+    background-color: transparent;
 }
 
 .login-table{
@@ -93,6 +91,20 @@ html body{
     height: 4vh;
     border-radius: 50px;
     margin-bottom: 3vh;
+}
+
+.google-button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.g_id_signin {
+    border: none !important;
+    width: 400px !important;   
+    height: 120px !important;    
+    border-radius: 12px !important; 
+    overflow: hidden;
 }
 
 /* Dashboard Container Styles */

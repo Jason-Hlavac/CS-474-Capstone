@@ -10,7 +10,7 @@ import logging
 
 app = Flask(__name__)
 CORS(app)
-adminSource = 'http://127.0.0.1:5500'
+adminSource = 'http://127.0.0.1:8000'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -195,9 +195,6 @@ def thresholds():
             def postThreshold():
                 req_data = request.get_json()
                 new_thresholds = req_data["thresholds"]
-                if not isinstance(new_thresholds, list) or len(new_thresholds) != 2 or \
-                not all(isinstance(x, (int, float)) and x >= 0 for x in new_thresholds):
-                    return jsonify({'status': 'error', 'message': 'Thresholds must be a list of two non-negative numbers'}), 422
                 data['thresholdsLevels'] = new_thresholds
                 write_data(data)
                 return jsonify({'status': 'success', 'thresholds': new_thresholds})
